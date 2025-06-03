@@ -1,5 +1,14 @@
 Scrum von 03.06.25:
 
-.
-.
-.
+Was haben wir bisher gemacht:
+- Projekt angelegt und konfiguriert
+- erste Hello World Gui
+
+Was werden wir diese Woche machen:
+- Paket und Klassenstruktur hinzufügen
+- grundlegende Aufgabenverteilung festlegen
+- Design Pattern festlegen
+
+Ziel: stehende Grundstruktur mit möglicher Ausführungsmöglichkeit (kleiner Prototyp wie ein einfaches Schachbrett)
+
+
