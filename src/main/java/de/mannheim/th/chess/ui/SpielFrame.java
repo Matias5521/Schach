@@ -50,6 +50,7 @@ public class SpielFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1920, 1080);
 		setTitle("Spiel");
+		setAlwaysOnTop(true);
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setLayout(new BorderLayout());
@@ -87,6 +88,7 @@ public class SpielFrame extends JFrame {
             	logger.info("Dunkles Feld erstellt."+i);
                 b.setBackground(new Color(65, 65, 65));
             }
+            
             b.setForeground(Color.WHITE);
             b.setBorderPainted(false);
 
