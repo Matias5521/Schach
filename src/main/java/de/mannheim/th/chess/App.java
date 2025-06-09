@@ -9,12 +9,13 @@ import de.mannheim.th.chess.ui.Ui;
  */
 public class App {
 	
-	private Ui userinterface = new Ui();
+	private static Ui userinterface;
 	/**
 	 * Main-Methode.
 	 * @param args
 	 */
     public static void main(String[] args) {
         System.out.println("Hello World!");
+        userinterface = new Ui();
     }
 }
