@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
 
@@ -34,29 +36,29 @@ public class Clock extends Thread implements Runnable {
 	
 	public void run() {
 		JFrame clockFrame = new JFrame("Clock");
-		Container pane = clockFrame.getContentPane();
-		pane.setBackground(Color.BLACK);
+		
+		JPanel player1Panel = new JPanel();
+		player1Panel.setBackground(Color.BLACK);
+		JPanel player2Panel = new JPanel();
+		player2Panel.setBackground(Color.BLACK);
 		clockFrame.setBounds(1000, 500, 10000, 10000);
-		clockFrame.setBackground(Color.BLACK);
 		clockFrame.setLayout(new BorderLayout());
-		var clock1 = new JLabel(minutes + ":00");
+		JLabel clock1 = new JLabel(" " + minutes + ":00 ");
 		clock1.setForeground(Color.WHITE);
 		clock1.setFont(new Font("Arial", Font.BOLD, 50));
-		var clock2 = new JLabel(minutes + ":00");
-		clock2.setFont(new Font("Arial", Font.BOLD, 50));
+		JLabel clock2 = new JLabel(" " + minutes + ":00 ");
 		clock2.setForeground(Color.WHITE);
-		var middleSpace = new JTextArea("	");
-		middleSpace.setBackground(Color.BLACK);
-		middleSpace.setEditable(false);
-		pane.add(middleSpace, BorderLayout.CENTER);
+		clock2.setFont(new Font("Arial", Font.BOLD, 50));
+		player1Panel.add(clock1);
+		player2Panel.add(clock2);
+		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, player1Panel, player2Panel);
+		split.setFont(new Font("Arial", Font.BOLD, 50));
+		clockFrame.add(split);
 		
 		var min1 = new AtomicInteger(minutes);
 		var sec1 = new AtomicInteger(0);
 		var min2 = new AtomicInteger(minutes);
 		var sec2 = new AtomicInteger(0);
-		pane.add(clock1, BorderLayout.LINE_START);
-		pane.add(middleSpace, BorderLayout.CENTER);
-		pane.add(clock2, BorderLayout.LINE_END);
 		clockFrame.pack();
 		clockFrame.setVisible(true);
 
