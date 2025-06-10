@@ -5,7 +5,6 @@ package de.mannheim.th.chess.utl;
  */
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,12 +12,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.Timer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Clock extends Thread implements Runnable {
 	private volatile boolean whiteToMove = true;
 	private volatile boolean gameHasFinished = false;
+	private static final Logger clockLogger = LogManager.getLogger(Clock.class);
 	private int minutes;
 	
 	public Clock(String mode) {
@@ -28,6 +30,11 @@ public class Clock extends Thread implements Runnable {
 	
 	public void pressClock() {
 		whiteToMove = !whiteToMove;
+		if (whiteToMove) {
+			clockLogger.info("Weiß ist am Zug");
+		} else {
+			clockLogger.info("Schwarz ist am Zug");
+		}
 	}
 	
 	public void endGame() {
@@ -108,20 +115,24 @@ public class Clock extends Thread implements Runnable {
 		t.start();
 	}
 	public static void main(String[] args) throws InterruptedException {
-		Clock st = new Clock("blitz");
+		Clock st = new Clock("classic");
 		st.start();
+		st.pressClock();
 	}
 	
 	private void setMode(String mode) {
 		switch(mode) {
 		case "blitz":
 			minutes = 5;
+			clockLogger.info("Neue Blitz-Uhr wurde erstellt");
 			break;
 		case "rapid":
 			minutes = 10;
+			clockLogger.info("Neue Schnellschach-Uhr wurde erstellt");
 			break;
 		case "classic":
 			minutes = 120;
+			clockLogger.info("Neue klassische Schachuhr wurde erstellt");
 			break;
 		}
 	}
