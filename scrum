@@ -11,4 +11,19 @@ Was werden wir diese Woche machen:
 
 Ziel: stehende Grundstruktur mit möglicher Ausführungsmöglichkeit (kleiner Prototyp wie ein einfaches Schachbrett)
 
+---
+Scrum von 11.06.25
 
+Was haben wir bisher gemacht:
+  - Schachbrett mit Figuren / Curser anzeige angelegt
+  - simple clock mit ui
+  - einfach SPiellogikschnittstelle
+
+
+Was werden wir diese Woche machen:
+  - Bewegbare Schachfiguren
+    - Anzeige welche Züge möglich sind
+  - Clock einfügen
+  - Spieleinlese planen
+
+Ziel: Singleplayer Spielbarer Zustand
