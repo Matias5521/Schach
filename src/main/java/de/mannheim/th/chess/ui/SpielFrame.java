@@ -41,7 +41,7 @@ public class SpielFrame extends JFrame {
 	private String symbolChoosed;
 
 	/**
-	 * Launch the application.
+	 * Launch the application. Die Main Methode für den WindowBuilder.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
