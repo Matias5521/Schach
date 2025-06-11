@@ -3,11 +3,15 @@ package de.mannheim.th.chess.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.github.bhlangonijr.chesslib.Board;
+
 import de.mannheim.th.chess.App;
+import de.mannheim.th.chess.domain.Game;
 
 import java.awt.EventQueue;
 import java.awt.Font;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,6 +29,7 @@ public class SpielFrame extends JFrame {
 	private JPanel contentPane;
 	private ArrayList<JButton> buttons = new ArrayList<>();
 	private JPanel panelLinks, panelRechts;
+	private Game game;
 
 	/**
 	 * Launch the application.
@@ -93,7 +98,26 @@ public class SpielFrame extends JFrame {
             b.setBorderPainted(false);
 
             panelLinks.add(b);
+            buttons.add(b);
         }
+        game = new Game();
+        ladeBrett();
     }
+	
+	public void ladeBrett() {
+		System.out.println(game.toFEN());
+		char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
+		int i = 0;
+		for (int j = 0; j < fen.length; j++) {
+			if (Character.isDigit(fen[j])) {
+				i += Character.getNumericValue(fen[j]);
+				continue;
+			}
+			buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+			i++;
+		}
+	}
+	
+	
 
 }
