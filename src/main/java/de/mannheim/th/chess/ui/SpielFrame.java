@@ -4,6 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.File;
+import com.github.bhlangonijr.chesslib.Rank;
+import com.github.bhlangonijr.chesslib.Square;
 
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
@@ -34,7 +37,8 @@ public class SpielFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private ArrayList<JButton> buttons = new ArrayList<>();
+	private HashMap<Integer, JButton> buttons = new HashMap<>();
+	private HashMap<JButton, Integer> positions = new HashMap<>();
 	private HashMap<JButton, String> belegungen = new HashMap<>();
 	private JPanel panelLinks, panelRechts;
 	private Game game;
@@ -126,6 +130,13 @@ public class SpielFrame extends JFrame {
 			        //wenn richtiger spieler dran:
 			        
 			        setCursor(figurCursor);
+			        int position = positions.get(clickedButton);
+			        game.getLegalMoves(Square.encode(Rank.allRanks[7 - position / 8], File.allFiles[position % 8])).stream()
+			        .peek(System.out::println)
+			        .map(m -> m.getTo())
+			        .peek(System.out::println)
+			        .map(s -> 56 - s.getRank().ordinal() * 8 + s.getFile().ordinal())
+			        .forEach(i -> buttons.get(i).setBackground(Color.RED));
 			        
 			        //Button Icon zurücksetzen
 			        
@@ -147,7 +158,8 @@ public class SpielFrame extends JFrame {
 			});
 
 			panelLinks.add(b);
-			buttons.add(b);
+			buttons.put(i, b);
+			positions.put(b, i);
 		}
 		
 		game = new Game();
@@ -182,4 +194,6 @@ public class SpielFrame extends JFrame {
 		
 		//System.out.println(belegungen.toString());
 	}
+	
+	
 }
