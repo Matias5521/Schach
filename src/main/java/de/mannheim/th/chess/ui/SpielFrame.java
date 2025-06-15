@@ -289,8 +289,8 @@ public class SpielFrame extends JFrame {
 			    int leerfelder = Character.getNumericValue(fen[j]);
 			    for (int k = 0; k < leerfelder; k++) {
 			        belegungen.put(buttons.get(i), "n-n");
-			        i++;
 			        buttons.get(i).setEnabled(false); // erstmal deaktivieren, weil leere Felder nicht ckickbar sein sollten.
+			        i++;
 			    }
 			    continue;
 			}else if (fen[j] >= 65 && fen[j] <= 90) { // ein Großbuchstabe, also
