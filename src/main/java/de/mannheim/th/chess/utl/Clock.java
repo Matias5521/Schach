@@ -25,7 +25,7 @@ public class Clock extends Thread implements Runnable {
 	
 	public Clock(String mode) {
 		setMode(mode);
-		
+		//run();
 	}
 	
 	public void pressClock() {
