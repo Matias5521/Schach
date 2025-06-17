@@ -303,6 +303,7 @@ public class SpielFrame extends JFrame {
         // beginnen kann
       }
       buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+      buttons.get(i).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
 
       i++;
 
@@ -327,10 +328,6 @@ public class SpielFrame extends JFrame {
       b.setName(i + "");
 
       buttons.add(b);
-    }
-
-    for (int i = 0; i < buttons.size(); i++) {
-      buttons.get(i).setText(String.valueOf(i)); // Update button text to its index
     }
   }
 
@@ -408,7 +405,6 @@ public class SpielFrame extends JFrame {
 
     }
 
-    // Add reversed buttons to the panel
     for (JButton b : buttons) {
       panelLinks.add(b);
     }
