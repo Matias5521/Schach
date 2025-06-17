@@ -1,6 +1,9 @@
 package de.mannheim.th.chess;
 
-import de.mannheim.th.chess.ui.Ui;
+import de.mannheim.th.chess.ui.MainFrame;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Eine einfache Schach App mithilfe von {@linkplain https://github.com/bhlangonijr/chesslib} entwickelt.
@@ -9,12 +12,15 @@ import de.mannheim.th.chess.ui.Ui;
  */
 public class App {
 	
-	private Ui userinterface = new Ui();
+	private static final Logger logger = LogManager.getLogger(App.class);
+	
+	private static MainFrame userinterface;
 	/**
 	 * Main-Methode.
 	 * @param args
 	 */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+    	logger.info("Hello World.");
+        userinterface = new MainFrame();
     }
 }
