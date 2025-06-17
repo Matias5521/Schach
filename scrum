@@ -27,3 +27,21 @@ Was werden wir diese Woche machen:
   - Spieleinlese planen
 
 Ziel: Singleplayer Spielbarer Zustand
+
+
+---
+Scrum von 17.06.25
+
+Was haben wir bisher gemacht:
+  - legal moves anzeige auf gui
+  - clock ist funktionsfähig
+
+
+Was werden wir diese Woche machen:
+  - ziehbare spielfiguren | ui refactor / Dominik 
+  - win conditions | promotion / Marius 
+  - spiel ui statistic ausgaben | history / Matias
+
+
+
+Ziel: Singleplayer Spielbarer Zustand + statistic Anzeige
