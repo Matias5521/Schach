@@ -7,6 +7,7 @@ import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
+import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
 import de.mannheim.th.chess.utl.Clock;
 
@@ -104,7 +105,21 @@ public class Game {
 
   }
 
+  public List<Square> getAllLegalMoveableSquares() {
+    return this.board.legalMoves().stream()
+        .map(move -> move.getFrom())
+        .collect(Collectors.toList());
+  }
+
+  public List<Square> getLegalMoveableSquares(Square square) {
+    return this.board.legalMoves().stream()
+        .filter(move -> move.getFrom() == square)
+        .map(move -> move.getTo())
+        .collect(Collectors.toList());
+  }
+
   public String toFEN() {
+    board.toString();
     return board.getFen();
   }
 }
