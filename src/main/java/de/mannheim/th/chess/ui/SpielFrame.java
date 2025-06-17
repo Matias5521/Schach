@@ -8,6 +8,7 @@ import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.File;
 import com.github.bhlangonijr.chesslib.Rank;
 import com.github.bhlangonijr.chesslib.Square;
+import com.github.bhlangonijr.chesslib.move.Move;
 
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
@@ -119,73 +120,14 @@ public class SpielFrame extends JFrame {
    */
   private void erstelleBrett() {
 
-    clearButtons();
-    setDefaultBackground();
+    this.clearButtons();
+    this.setDefaultBackground();
+    this.setButtonsActions();
 
-    List<Square> selectables;
+    ladeBrett();
 
-    switch (this.mode) {
-      case BoardMode.normal:
-        selectables = game.getAllLegalMoveableSquares();
-
-        System.out.println(selectables);
-
-        for (Square square : selectables) {
-          final Square currentSquare = square; // ActionListener need it to be final
-          JButton b = buttons.get(63 - square.ordinal());
-          b.setEnabled(true);
-          b.setBackground(Color.green);
-          b.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              System.out.println("switch to selected");
-              mode = BoardMode.pieceSelected;
-              selectedSquare = currentSquare;
-              erstelleBrett();
-            }
-          });
-        }
-
-        break;
-
-      case BoardMode.pieceSelected:
-        JButton s = buttons.get(63 - selectedSquare.ordinal());
-        s.setEnabled(true);
-        s.setBackground(Color.orange);
-        s.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            mode = BoardMode.normal;
-            selectedSquare = null;
-            erstelleBrett();
-          }
-        }); // cancel action
-
-        selectables = game.getLegalMoveableSquares(selectedSquare);
-
-        for (Square square : selectables) {
-          JButton b = buttons.get(63 - square.ordinal());
-          b.setEnabled(true);
-          b.setBackground(Color.RED);
-          b.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              System.out.println("switch to normal");
-              mode = BoardMode.normal;
-              erstelleBrett();
-            }
-          });
-        }
-
-        break;
-      default:
-        break;
-
-    }
-
-    for (JButton b : this.buttons) {
-      panelLinks.add(b);
-    }
+    panelLinks.revalidate();
+    panelLinks.repaint();
 
     // int i = 0;i<64;i++)
     // {
@@ -329,8 +271,10 @@ public class SpielFrame extends JFrame {
     //
     // }
 
-    ladeBrett();
+  }
 
+  private int mirrowedGrid(int i) {
+    return 63 - (((i / 8) * 8) + (7 - i % 8));
   }
 
   /**
@@ -355,7 +299,8 @@ public class SpielFrame extends JFrame {
         belegungen.put(buttons.get(i), "w-" + fen[j]);
       } else if (fen[j] >= 97 && fen[j] <= 122) { // ein Kleinbuchstabe, also
         belegungen.put(buttons.get(i), "b-" + fen[j]);
-        buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß beginnen kann
+        // buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß
+        // beginnen kann
       }
       buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
 
@@ -383,6 +328,10 @@ public class SpielFrame extends JFrame {
 
       buttons.add(b);
     }
+
+    for (int i = 0; i < buttons.size(); i++) {
+      buttons.get(i).setText(String.valueOf(i)); // Update button text to its index
+    }
   }
 
   private void setDefaultBackground() {
@@ -395,6 +344,73 @@ public class SpielFrame extends JFrame {
         logger.info("Dunkles Feld erstellt." + i);
         b.setBackground(new Color(65, 65, 65));
       }
+    }
+  }
+
+  private void setButtonsActions() {
+
+    List<Square> selectables;
+
+    switch (this.mode) {
+      case BoardMode.normal:
+        selectables = game.getAllLegalMoveableSquares();
+
+        for (Square square : selectables) {
+          final Square currentSquare = square; // ActionListener need it to be final
+          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+          b.setEnabled(true);
+          b.setBackground(Color.green);
+          b.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              mode = BoardMode.pieceSelected;
+              selectedSquare = currentSquare;
+              erstelleBrett();
+            }
+          });
+        }
+
+        break;
+
+      case BoardMode.pieceSelected:
+        JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
+        s.setEnabled(true);
+        s.setBackground(Color.orange);
+        s.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            mode = BoardMode.normal;
+            selectedSquare = null;
+            erstelleBrett();
+          }
+        }); // cancel action
+
+        selectables = game.getLegalMoveableSquares(selectedSquare);
+
+        for (Square square : selectables) {
+          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+          final Move move = new Move(selectedSquare, square);
+          b.setEnabled(true);
+          b.setBackground(Color.RED);
+          b.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              game.playMove(move);
+              mode = BoardMode.normal;
+              erstelleBrett();
+            }
+          });
+        }
+
+        break;
+      default:
+        break;
+
+    }
+
+    // Add reversed buttons to the panel
+    for (JButton b : buttons) {
+      panelLinks.add(b);
     }
   }
 
