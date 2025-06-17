@@ -30,8 +30,8 @@ public class Game {
 
     this.movelist = new MoveList();
 
-    this.clockPlayer1 = new Clock();
-    this.clockPlayer2 = new Clock();
+    // this.clockPlayer1 = new Clock();
+    // this.clockPlayer2 = new Clock();
 
   }
 
@@ -49,8 +49,8 @@ public class Game {
       this.board.doMove(move);
     }
 
-    this.clockPlayer1 = new Clock();
-    this.clockPlayer2 = new Clock();
+    // this.clockPlayer1 = new Clock();
+    // this.clockPlayer2 = new Clock();
   }
 
   /**
@@ -64,8 +64,8 @@ public class Game {
 
     this.movelist = new MoveList();
 
-    this.clockPlayer1 = new Clock();
-    this.clockPlayer2 = new Clock();
+    // this.clockPlayer1 = new Clock();
+    // this.clockPlayer2 = new Clock();
   }
 
   /**
@@ -102,5 +102,9 @@ public class Game {
         .filter(move -> move.getFrom() == square)
         .collect(Collectors.toList());
 
+  }
+
+  public String toFEN() {
+    return board.getFen();
   }
 }
