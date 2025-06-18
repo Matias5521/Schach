@@ -35,34 +35,16 @@ public class SpielFrame extends JFrame {
   private static final Logger logger = LogManager.getLogger(App.class);
 
   private static final long serialVersionUID = 1L;
-  private JPanel contentPane;
   private ArrayList<JButton> buttons = new ArrayList<>();
   private HashMap<JButton, String> belegungen = new HashMap<>();
-  private JPanel panelLinks, panelRechts;
+  private JPanel panelLinks, panelRechts, contentPane;
   private Game game;
-  private String symbolChoosed;
 
   private BoardMode mode;
   private Square selectedSquare;
 
   public enum BoardMode {
     normal, pieceSelected, finished
-  }
-
-  /**
-   * Launch the application. Die Main-Methode für den WindowBuilder.
-   */
-  public static void main(String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          SpielFrame frame = new SpielFrame();
-          frame.setVisible(true);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    });
   }
 
   /**
@@ -78,7 +60,7 @@ public class SpielFrame extends JFrame {
     setTitle("Schach");
     setAlwaysOnTop(true);
 
-    JPanel contentPane = new JPanel();
+    contentPane = new JPanel();
     contentPane.setLayout(new BorderLayout());
     setContentPane(contentPane);
 
