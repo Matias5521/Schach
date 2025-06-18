@@ -35,280 +35,277 @@ import java.awt.event.ActionListener;
 
 public class SpielFrame extends JFrame {
 
-  private static final Logger logger = LogManager.getLogger(App.class);
+	private static final Logger logger = LogManager.getLogger(App.class);
 
-  private static final long serialVersionUID = 1L;
-  private JPanel contentPane;
-  private ArrayList<JButton> buttons = new ArrayList<>();
-  private HashMap<JButton, String> belegungen = new HashMap<>();
-  private JPanel panelLinks, panelRechts;
-  private Game game;
-  private String symbolChoosed;
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private ArrayList<JButton> buttons = new ArrayList<>();
+	private HashMap<JButton, String> belegungen = new HashMap<>();
+	private JPanel panelLinks, panelRechts;
+	private Game game;
+	private String symbolChoosed;
 
-  private BoardMode mode;
-  private Square selectedSquare;
+	private BoardMode mode;
+	private Square selectedSquare;
 
-  enum BoardMode {
-    normal,
-    pieceSelected,
-  }
+	enum BoardMode {
+		normal, pieceSelected,
+	}
 
-  /**
-   * Launch the application. Die Main-Methode für den WindowBuilder.
-   */
-  public static void main(String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          SpielFrame frame = new SpielFrame();
-          frame.setVisible(true);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    });
-  }
+	/**
+	 * Launch the application. Die Main-Methode für den WindowBuilder.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					SpielFrame frame = new SpielFrame();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
-  /**
-   * Create the frame.
-   */
-  public SpielFrame() {
+	/**
+	 * Create the frame.
+	 */
+	public SpielFrame() {
 
-    game = new Game();
-    mode = BoardMode.normal;
+		game = new Game();
+		mode = BoardMode.normal;
 
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setBounds(100, 100, 1920, 1080);
-    setTitle("Schach");
-    setAlwaysOnTop(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1920, 1080);
+		setTitle("Schach");
+		setAlwaysOnTop(true);
 
-    JPanel contentPane = new JPanel();
-    contentPane.setLayout(new BorderLayout());
-    setContentPane(contentPane);
+		JPanel contentPane = new JPanel();
+		contentPane.setLayout(new BorderLayout());
+		setContentPane(contentPane);
 
-    // Linkes Panel mit GridLayout 8x8 für Schachbrett
-    panelLinks = new JPanel(new GridLayout(8, 8));
+		// Linkes Panel mit GridLayout 8x8 für Schachbrett
+		panelLinks = new JPanel(new GridLayout(8, 8));
 
-    erstelleBrett();
+		erstelleBrett();
 
-    // Rechtes Panel für Steuerung oder zusätzliche Eingaben
-    panelRechts = new JPanel();
-    panelRechts.setBackground(Color.LIGHT_GRAY);
+		// Rechtes Panel für Steuerung oder zusätzliche Eingaben
+		panelRechts = new JPanel();
+		panelRechts.setBackground(Color.LIGHT_GRAY);
 
-    // JSplitPane horizontal (linke und rechte Hälfte)
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelLinks, panelRechts);
-    splitPane.setResizeWeight(0.70);
-    splitPane.setDividerSize(5);
-    splitPane.setEnabled(false);
+		// JSplitPane horizontal (linke und rechte Hälfte)
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelLinks, panelRechts);
+		splitPane.setResizeWeight(0.70);
+		splitPane.setDividerSize(5);
+		splitPane.setEnabled(false);
 
-    contentPane.add(splitPane, BorderLayout.CENTER);
-    setVisible(true);
-  }
+		contentPane.add(splitPane, BorderLayout.CENTER);
+		setVisible(true);
+	}
 
-  /**
-   * Erstellt alle Buttons und fügt sie dem Frame hinzu.
-   */
-  private void erstelleBrett() {
+	/**
+	 * Erstellt alle Buttons und fügt sie dem Frame hinzu.
+	 */
+	private void erstelleBrett() {
 
-    this.clearButtons();
-    this.setDefaultBackground();
-    this.setButtonsActions();
+		this.clearButtons();
+		this.setDefaultBackground();
+		this.setButtonsActions();
 
-    ladeBrett();
+		ladeBrett();
 
-    panelLinks.revalidate();
-    panelLinks.repaint();
+		panelLinks.revalidate();
+		panelLinks.repaint();
 
-    // // Bild laden und Cursor im gesamten Frame setzen
-    // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
-    // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-    // Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
-    // new Point(0, 0),
-    // "figurCursor");
-    // setCursor(figurCursor);
+		// // Bild laden und Cursor im gesamten Frame setzen
+		// Image image = Toolkit.getDefaultToolkit().getImage(pfad);
+		// Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		// Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
+		// new Point(0, 0),
+		// "figurCursor");
+		// setCursor(figurCursor);
 
-    // }else
-    // {
-    //
-    // // wenn gerade Figur ausgewählt wird...
-    // buttonChoosed = (JButton) e.getSource();
-    // symbolChoosed = belegungen.get(buttonChoosed);
-    // // System.out.println(symbolChoosed+" wurde gewählt.");
-    // // setzt cursor auf spielfigur für die animation
-    // String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
-    // ".png";
-    //
-    // // Bild laden und Cursor im gesamten Frame setzen
-    // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
-    // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-    // Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
-    // new Point(0, 0),
-    // "figurCursor");
-    // setCursor(figurCursor);
-  }
+		// }else
+		// {
+		//
+		// // wenn gerade Figur ausgewählt wird...
+		// buttonChoosed = (JButton) e.getSource();
+		// symbolChoosed = belegungen.get(buttonChoosed);
+		// // System.out.println(symbolChoosed+" wurde gewählt.");
+		// // setzt cursor auf spielfigur für die animation
+		// String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
+		// ".png";
+		//
+		// // Bild laden und Cursor im gesamten Frame setzen
+		// Image image = Toolkit.getDefaultToolkit().getImage(pfad);
+		// Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		// Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
+		// new Point(0, 0),
+		// "figurCursor");
+		// setCursor(figurCursor);
+	}
 
-  private int mirrowedGrid(int i) {
-    return 63 - (((i / 8) * 8) + (7 - i % 8));
-  }
+	private int mirrowedGrid(int i) {
+		return 63 - (((i / 8) * 8) + (7 - i % 8));
+	}
 
-  /**
-   * holt sich FEN-Zeichenkette und extrahiert daraus die Positionen der Figuren
-   */
-  private void ladeBrett() {
-    // System.out.println(game.toFEN());
+	/**
+	 * holt sich FEN-Zeichenkette und extrahiert daraus die Positionen der Figuren
+	 */
+	private void ladeBrett() {
+		// System.out.println(game.toFEN());
 
-    char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
-    int i = 0;
-    for (int j = 0; j < fen.length; j++) {
-      if (Character.isDigit(fen[j])) {
-        int leerfelder = Character.getNumericValue(fen[j]);
-        for (int k = 0; k < leerfelder; k++) {
-          belegungen.put(buttons.get(i), "n-n");
-          // buttons.get(i).setEnabled(false); // erstmal deaktivieren, weil leere Felder
-          // nicht ckickbar sein sollten.
-          i++;
-        }
-        continue;
-      } else if (fen[j] >= 65 && fen[j] <= 90) { // ein Großbuchstabe, also
-        belegungen.put(buttons.get(i), "w-" + fen[j]);
-      } else if (fen[j] >= 97 && fen[j] <= 122) { // ein Kleinbuchstabe, also
-        belegungen.put(buttons.get(i), "b-" + fen[j]);
-        // buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß
-        // beginnen kann
-      }
-      buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
-      buttons.get(i).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+		char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
+		int i = 0;
+		for (int j = 0; j < fen.length; j++) {
+			if (Character.isDigit(fen[j])) {
+				int leerfelder = Character.getNumericValue(fen[j]);
+				for (int k = 0; k < leerfelder; k++) {
+					belegungen.put(buttons.get(i), "n-n");
+					// buttons.get(i).setEnabled(false); // erstmal deaktivieren, weil leere Felder
+					// nicht ckickbar sein sollten.
+					i++;
+				}
+				continue;
+			} else if (fen[j] >= 65 && fen[j] <= 90) { // ein Großbuchstabe, also
+				belegungen.put(buttons.get(i), "w-" + fen[j]);
+			} else if (fen[j] >= 97 && fen[j] <= 122) { // ein Kleinbuchstabe, also
+				belegungen.put(buttons.get(i), "b-" + fen[j]);
+				// buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß
+				// beginnen kann
+			}
+			buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+			buttons.get(i).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
 
-      i++;
+			i++;
 
-    }
-  }
+		}
+	}
 
-  /**
-   * Clears the existing buttons from the button list, panellinks and fills them
-   * with new blank ones.
-   */
-  private void clearButtons() {
-    buttons.clear();
-    panelLinks.removeAll();
+	/**
+	 * Clears the existing buttons from the button list, panellinks and fills them
+	 * with new blank ones.
+	 */
+	private void clearButtons() {
+		buttons.clear();
+		panelLinks.removeAll();
 
-    for (int i = 0; i < 64; i++) {
-      JButton b = new JButton();
+		for (int i = 0; i < 64; i++) {
+			JButton b = new JButton();
 
-      b.setEnabled(false);
+			b.setEnabled(false);
 
-      // style
-      b.setFocusPainted(false);
-      b.setFont(new Font("Arial", Font.PLAIN, 30));
-      b.setForeground(Color.WHITE);
-      b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-      b.setName(i + "");
+			// style
+			b.setFocusPainted(false);
+			b.setFont(new Font("Arial", Font.PLAIN, 30));
+			b.setForeground(Color.WHITE);
+			b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+			b.setName(i + "");
 
-      buttons.add(b);
-    }
-  }
+			buttons.add(b);
+		}
+	}
 
-  /**
-   * Sets the default background color for the buttons in the grid.
-   */
-  private void setDefaultBackground() {
-    for (int i = 0; i < 64; i++) {
-      JButton b = buttons.get(i);
-      if ((i / 8 + i % 8) % 2 == 0) {
-        logger.info("Helles Feld erstellt." + i);
-        b.setBackground(new Color(90, 90, 90));
-      } else {
-        logger.info("Dunkles Feld erstellt." + i);
-        b.setBackground(new Color(65, 65, 65));
-      }
-    }
-  }
+	/**
+	 * Sets the default background color for the buttons in the grid.
+	 */
+	private void setDefaultBackground() {
+		for (int i = 0; i < 64; i++) {
+			JButton b = buttons.get(i);
+			if ((i / 8 + i % 8) % 2 == 0) {
+				logger.info("Helles Feld erstellt." + i);
+				b.setBackground(new Color(90, 90, 90));
+			} else {
+				logger.info("Dunkles Feld erstellt." + i);
+				b.setBackground(new Color(65, 65, 65));
+			}
+		}
+	}
 
-  /*
-   * Switches the button actions depending on the boardmode
-   */
-  private void setButtonsActions() {
+	/*
+	 * Switches the button actions depending on the boardmode
+	 */
+	private void setButtonsActions() {
 
-    List<Square> selectables;
+		List<Square> selectables;
 
-    switch (this.mode) {
-      case BoardMode.normal:
-        selectables = game.getAllLegalMoveableSquares();
+		switch (this.mode) {
+		case BoardMode.normal:
+			selectables = game.getAllLegalMoveableSquares();
 
-        for (Square square : selectables) {
-          final Square currentSquare = square; // ActionListener need it to be final
-          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
-          b.setEnabled(true);
-          //b.setBackground(Color.green);
-          b.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              mode = BoardMode.pieceSelected;
-              selectedSquare = currentSquare;
-             
-               symbolChoosed = belegungen.get(b);
-              
-               // setzt cursor auf spielfigur für die animation
-               String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
-               ".png";
-              
-               // Bild laden und Cursor im gesamten Frame setzen
-               Image image = Toolkit.getDefaultToolkit().getImage(pfad);
-               Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-               Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
-               new Point(0, 0),
-               "figurCursor");
-               setCursor(figurCursor);
-              
-              erstelleBrett();
-            }
-          });
-        }
+			for (Square square : selectables) {
+				final Square currentSquare = square; // ActionListener need it to be final
+				JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+				b.setEnabled(true);
+				// b.setBackground(Color.green);
+				b.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						mode = BoardMode.pieceSelected;
+						selectedSquare = currentSquare;
 
-        break;
+						symbolChoosed = belegungen.get(b);
 
-      case BoardMode.pieceSelected:
-    	
-        JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
-        s.setEnabled(true);
-        s.setBackground(Color.orange);
-        s.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            mode = BoardMode.normal;
-            selectedSquare = null;
-            setCursor(null);
-            erstelleBrett();
-          }
-        }); // cancel action
+						// setzt cursor auf spielfigur für die animation
+						String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] + ".png";
 
-        selectables = game.getLegalMoveableSquares(selectedSquare);
+						// Bild laden und Cursor im gesamten Frame setzen
+						Image image = Toolkit.getDefaultToolkit().getImage(pfad);
+						Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+						Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled, new Point(0, 0),
+								"figurCursor");
+						setCursor(figurCursor);
 
-        for (Square square : selectables) {
-          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
-          final Move move = new Move(selectedSquare, square);
-          b.setEnabled(true);
-          b.setBackground(Color.RED);
-          b.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              game.playMove(move);
-              mode = BoardMode.normal;
-              setCursor(null);
-              erstelleBrett();
-            }
-          });
-        }
+						erstelleBrett();
+					}
+				});
+			}
 
-        break;
-      default:
-        break;
+			break;
 
-    }
+		case BoardMode.pieceSelected:
 
-    for (JButton b : buttons) {
-      panelLinks.add(b);
-    }
-  }
+			JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
+			s.setEnabled(true);
+			s.setBackground(new Color(165, 42, 42));
+			s.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					mode = BoardMode.normal;
+					selectedSquare = null;
+					setCursor(null);
+					erstelleBrett();
+				}
+			}); // cancel action
+
+			selectables = game.getLegalMoveableSquares(selectedSquare);
+
+			for (Square square : selectables) {
+				JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+				final Move move = new Move(selectedSquare, square);
+				b.setEnabled(true);
+				b.setBackground(new Color(230, 100, 100));
+				b.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						game.playMove(move);
+						mode = BoardMode.normal;
+						setCursor(null);
+						erstelleBrett();
+					}
+				});
+			}
+
+			break;
+		default:
+			break;
+
+		}
+
+		for (JButton b : buttons) {
+			panelLinks.add(b);
+		}
+	}
 
 }
