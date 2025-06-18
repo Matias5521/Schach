@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
@@ -18,8 +19,7 @@ import de.mannheim.th.chess.utl.Clock;
 public class Game {
 
   private Board board;
-  private Clock clockPlayer1;
-  private Clock clockPlayer2;
+  private Clock clock;
 
   private MoveList movelist;
 
@@ -31,8 +31,8 @@ public class Game {
 
     this.movelist = new MoveList();
 
-    // this.clockPlayer1 = new Clock();
-    // this.clockPlayer2 = new Clock();
+    clock = new Clock("blitz");
+    clock.start();
 
   }
 
@@ -77,6 +77,7 @@ public class Game {
   public void playMove(Move move) {
     this.board.doMove(move);
     this.movelist.add(move);
+    clock.pressClock();
   }
 
   /**
@@ -89,6 +90,22 @@ public class Game {
     Move move = new Move(origin, desination);
     this.board.doMove(move);
     this.movelist.add(move);
+    
+  }
+  
+  public boolean isMate() {
+	  return board.isMated();
+  }
+  
+  public boolean isDraw() {
+	  return board.isDraw();
+  }
+  
+  public int getActivePlayer() {
+	  if (board.getSideToMove() == Side.WHITE) {
+		  return 1;
+	  }
+	  return 2;
   }
 
   /**
@@ -103,6 +120,10 @@ public class Game {
         .filter(move -> move.getFrom() == square)
         .collect(Collectors.toList());
 
+  }
+  
+  public void stopClock() {
+	  clock.endGame();
   }
 
   /**

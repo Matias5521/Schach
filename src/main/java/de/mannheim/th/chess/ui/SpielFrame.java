@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.github.bhlangonijr.chesslib.Square;
+import com.github.bhlangonijr.chesslib.game.Player;
 import com.github.bhlangonijr.chesslib.move.Move;
 
 import de.mannheim.th.chess.App;
@@ -16,8 +17,12 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -49,7 +54,7 @@ public class SpielFrame extends JFrame {
 	private Square selectedSquare;
 
 	enum BoardMode {
-		normal, pieceSelected,
+		normal, pieceSelected, finished
 	}
 
 	/**
@@ -222,6 +227,8 @@ public class SpielFrame extends JFrame {
 			}
 		}
 	}
+	
+	
 
 	/*
 	 * Switches the button actions depending on the boardmode
@@ -290,6 +297,15 @@ public class SpielFrame extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						game.playMove(move);
+						if (game.isDraw()) {
+							game.stopClock();
+							mode = BoardMode.finished;
+							showDraw();
+						} else if (game.isMate()) {
+							game.stopClock();
+							mode = BoardMode.finished;
+							showWin(game.getActivePlayer());
+						}
 						mode = BoardMode.normal;
 						setCursor(null);
 						erstelleBrett();
@@ -297,6 +313,10 @@ public class SpielFrame extends JFrame {
 				});
 			}
 
+			break;
+			
+		case finished:
+			clearButtons();
 			break;
 		default:
 			break;
@@ -306,6 +326,33 @@ public class SpielFrame extends JFrame {
 		for (JButton b : buttons) {
 			panelLinks.add(b);
 		}
+	}
+	
+	private void showDraw() {
+		JFrame frame = new JFrame("Result");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(null);
+
+        JLabel jl = new JLabel("1/2 - 1/2");
+        jl.setBounds(50, 30, 200, 25);
+        jl.setFont(new Font("Tahoma", Font.BOLD, 20));
+        frame.add(jl);
+        frame.setVisible(true);
+		
+	}
+	
+	private void showWin(int player) {
+		JFrame frame = new JFrame("Result");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 150);
+        frame.setLayout(null);
+
+        JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
+        jl.setBounds(50, 30, 200, 25);
+        jl.setFont(new Font("Tahoma", Font.BOLD, 20));
+        frame.add(jl);
+        frame.setVisible(true);
 	}
 
 }
