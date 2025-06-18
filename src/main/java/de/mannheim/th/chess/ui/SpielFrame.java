@@ -2,11 +2,7 @@ package de.mannheim.th.chess.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Red;
 
-import com.github.bhlangonijr.chesslib.Board;
-import com.github.bhlangonijr.chesslib.File;
-import com.github.bhlangonijr.chesslib.Rank;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 
@@ -44,16 +40,9 @@ public class SpielFrame extends JFrame {
   private static final long serialVersionUID = 1L;
   private JPanel contentPane;
   private ArrayList<JButton> buttons = new ArrayList<>();
-  private List<Integer> clickableButtons = new ArrayList<>();
-  private HashMap<JButton, Integer> positions = new HashMap<>();
   private HashMap<JButton, String> belegungen = new HashMap<>();
-  private HashMap<JButton, Color> farben = new HashMap<>();
   private JPanel panelLinks, panelRechts;
   private Game game;
-  private String symbolChoosed;
-  private JButton buttonChoosed;
-  private boolean playerWhite = true;
-  private boolean moveFinished = false;
 
   private BoardMode mode;
   private Square selectedSquare;
@@ -129,17 +118,6 @@ public class SpielFrame extends JFrame {
     panelLinks.revalidate();
     panelLinks.repaint();
 
-    // int i = 0;i<64;i++)
-    // {
-    //
-    // // wenn gerade Figur ausgewählt wird...
-    // buttonChoosed = (JButton) e.getSource();
-    // symbolChoosed = belegungen.get(buttonChoosed);
-    //
-    // // setzt cursor auf spielfigur für die animation
-    // String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
-    // ".png";
-    //
     // // Bild laden und Cursor im gesamten Frame setzen
     // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
     // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
@@ -147,57 +125,7 @@ public class SpielFrame extends JFrame {
     // new Point(0, 0),
     // "figurCursor");
     // setCursor(figurCursor);
-    //
-    // // filtert möglichen Züge heraus
-    // int position = positions.get(buttonChoosed);
-    //
-    // clickableButtons = game
-    // .getLegalMoves(
-    // Square.encode(Rank.allRanks[7 - position / 8], File.allFiles[position % 8]))
-    // .stream().peek(System.out::println).map(m ->
-    // m.getTo()).peek(System.out::println)
-    // .map(s -> 56 - s.getRank().ordinal() * 8 + s.getFile().ordinal())
-    // .collect(Collectors.toList());
-    //
-    // // filtert mögliche Züge und nicht mögliche Züge in eine Map aus Listen
-    // Map<Boolean, List<JButton>> buttonsSeperated = buttons.stream()
-    // .collect(Collectors.partitioningBy(b ->
-    // clickableButtons.contains(buttons.indexOf(b))));
-    //
-    // for (Boolean list : buttonsSeperated.keySet()) {
-    //
-    // if (list) {
-    // // alle möglichen felder rot markieren
-    // for (JButton b : positions.keySet()) {
-    // // wenn button ein möglicher zug ist
-    // if (clickableButtons.contains(positions.get(b))) {
-    // farben.put(b, b.getBackground()); // damit sich gemerkt werden kann welches
-    // feld welche farbe vorher
-    // // hatte
-    // b.setBackground(new Color(230, 100, 100));
-    //
-    // }
-    // }
-    //
-    // } else {
-    // // den rest der buttons ausser die möglichen züge deaktivieren
-    // List<JButton> andere = buttonsSeperated.get(list);
-    //
-    // for (JButton b : andere) {
-    // if (!belegungen.get(b).split("-")[0].equals("w")) {
-    // b.setEnabled(false);
-    // }
-    // }
-    // }
-    // }
-    //
-    // // alle weisen squares deaktivieren, damit dannach klar ist wer dran ist
-    // for (JButton b : belegungen.keySet()) {
-    // if (belegungen.get(b).split("-")[0].equals("b")) {
-    // b.setEnabled(false);
-    // }
-    // }
-    //
+
     // }else
     // {
     //
@@ -216,61 +144,6 @@ public class SpielFrame extends JFrame {
     // new Point(0, 0),
     // "figurCursor");
     // setCursor(figurCursor);
-    //
-    // // filtert möglichen Züge heraus
-    // int position = positions.get(buttonChoosed);
-    // List<Integer> clickableButtons = new ArrayList<>();
-    // clickableButtons = game
-    // .getLegalMoves(
-    // Square.encode(Rank.allRanks[7 - position / 8], File.allFiles[position % 8]))
-    // .stream().peek(System.out::println).map(m ->
-    // m.getTo()).peek(System.out::println)
-    // .map(s -> 56 - s.getRank().ordinal() * 8 + s.getFile().ordinal())
-    // .collect(Collectors.toList());
-    //
-    // for (JButton b : positions.keySet()) {
-    // // wenn button ein möglicher zug ist
-    // if (clickableButtons.contains(positions.get(b))) {
-    // b.setBackground(new Color(230, 100, 100));
-    // }
-    // }
-    //
-    // // alle schwarzen squares deaktivieren, damit dannach klar ist wer dran ist
-    // for (JButton b : belegungen.keySet()) {
-    // if (belegungen.get(b).split("-")[0].equals("w")) {
-    // b.setEnabled(false);
-    // }
-    // }
-    //
-    // }
-    //
-    // // alle anderen Buttons nicht ckickbar zu machen
-    //
-    // // Button Icon zurücksetzen
-    //
-    // // Buttonposition merken (in MoveListe oder so)
-    //
-    // // wenn Button platzierd werden soll...
-    //
-    // // neuen Button in Moveliste eintragen
-    //
-    // // Icon ändern
-    //
-    // // Modus auf auswählen setzen und spielerwechsel markieren
-    //
-    // // spielerwechsel
-    // if(moveFinished)playerWhite=!playerWhite;
-    //
-    // }
-    //
-    // });
-
-    // panelLinks.add(b);
-    // buttons.add(b);
-    // positions.put(b, i);
-    //
-    // }
-
   }
 
   private int mirrowedGrid(int i) {
@@ -310,6 +183,10 @@ public class SpielFrame extends JFrame {
     }
   }
 
+  /**
+   * Clears the existing buttons from the button list, panellinks and fills them
+   * with new blank ones.
+   */
   private void clearButtons() {
     buttons.clear();
     panelLinks.removeAll();
@@ -322,7 +199,6 @@ public class SpielFrame extends JFrame {
       // style
       b.setFocusPainted(false);
       b.setFont(new Font("Arial", Font.PLAIN, 30));
-
       b.setForeground(Color.WHITE);
       b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
       b.setName(i + "");
@@ -331,6 +207,9 @@ public class SpielFrame extends JFrame {
     }
   }
 
+  /**
+   * Sets the default background color for the buttons in the grid.
+   */
   private void setDefaultBackground() {
     for (int i = 0; i < 64; i++) {
       JButton b = buttons.get(i);
@@ -344,6 +223,9 @@ public class SpielFrame extends JFrame {
     }
   }
 
+  /*
+   * Switches the button actions depending on the boardmode
+   */
   private void setButtonsActions() {
 
     List<Square> selectables;
@@ -363,6 +245,21 @@ public class SpielFrame extends JFrame {
               mode = BoardMode.pieceSelected;
               selectedSquare = currentSquare;
               erstelleBrett();
+
+              // buttonChoosed = (JButton) e.getSource();
+              // symbolChoosed = belegungen.get(buttonChoosed);
+              //
+              // // setzt cursor auf spielfigur für die animation
+              // String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
+              // ".png";
+              //
+              // // Bild laden und Cursor im gesamten Frame setzen
+              // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
+              // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+              // Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
+              // new Point(0, 0),
+              // "figurCursor");
+              // setCursor(figurCursor);
             }
           });
         }
