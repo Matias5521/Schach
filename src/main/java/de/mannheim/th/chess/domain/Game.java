@@ -105,12 +105,25 @@ public class Game {
 
   }
 
+  /**
+   * Retrieves a list of all legal moveable squares from the current board state.
+   * 
+   * @return a List of Square objects representing all legal moveable squares.
+   */
   public List<Square> getAllLegalMoveableSquares() {
     return this.board.legalMoves().stream()
         .map(move -> move.getFrom())
+        .distinct()
         .collect(Collectors.toList());
   }
 
+  /**
+   * Retrieves a list of legal moveable squares for a given square.
+   * 
+   * @param square the Square from which to retrieve legal moveable squares
+   * @return a List of Square objects representing the legal moveable squares
+   *         from the specified square.
+   */
   public List<Square> getLegalMoveableSquares(Square square) {
     return this.board.legalMoves().stream()
         .filter(move -> move.getFrom() == square)
