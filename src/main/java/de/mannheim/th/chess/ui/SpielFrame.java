@@ -43,6 +43,7 @@ public class SpielFrame extends JFrame {
   private HashMap<JButton, String> belegungen = new HashMap<>();
   private JPanel panelLinks, panelRechts;
   private Game game;
+  private String symbolChoosed;
 
   private BoardMode mode;
   private Square selectedSquare;
@@ -238,28 +239,28 @@ public class SpielFrame extends JFrame {
           final Square currentSquare = square; // ActionListener need it to be final
           JButton b = buttons.get(mirrowedGrid(square.ordinal()));
           b.setEnabled(true);
-          b.setBackground(Color.green);
+          //b.setBackground(Color.green);
           b.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
               mode = BoardMode.pieceSelected;
               selectedSquare = currentSquare;
+             
+               symbolChoosed = belegungen.get(b);
+              
+               // setzt cursor auf spielfigur für die animation
+               String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
+               ".png";
+              
+               // Bild laden und Cursor im gesamten Frame setzen
+               Image image = Toolkit.getDefaultToolkit().getImage(pfad);
+               Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+               Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
+               new Point(0, 0),
+               "figurCursor");
+               setCursor(figurCursor);
+              
               erstelleBrett();
-
-              // buttonChoosed = (JButton) e.getSource();
-              // symbolChoosed = belegungen.get(buttonChoosed);
-              //
-              // // setzt cursor auf spielfigur für die animation
-              // String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
-              // ".png";
-              //
-              // // Bild laden und Cursor im gesamten Frame setzen
-              // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
-              // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-              // Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
-              // new Point(0, 0),
-              // "figurCursor");
-              // setCursor(figurCursor);
             }
           });
         }
@@ -267,6 +268,7 @@ public class SpielFrame extends JFrame {
         break;
 
       case BoardMode.pieceSelected:
+    	
         JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
         s.setEnabled(true);
         s.setBackground(Color.orange);
@@ -275,6 +277,7 @@ public class SpielFrame extends JFrame {
           public void actionPerformed(ActionEvent e) {
             mode = BoardMode.normal;
             selectedSquare = null;
+            setCursor(null);
             erstelleBrett();
           }
         }); // cancel action
@@ -291,6 +294,7 @@ public class SpielFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
               game.playMove(move);
               mode = BoardMode.normal;
+              setCursor(null);
               erstelleBrett();
             }
           });
