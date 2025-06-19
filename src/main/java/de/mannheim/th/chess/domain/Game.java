@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.Piece;
+import com.github.bhlangonijr.chesslib.Rank;
 import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
@@ -125,6 +127,11 @@ public class Game {
   public void stopClock() {
 	  clock.endGame();
   }
+  
+  public boolean isPromotionMove(Move move) {
+	  return ((move.getTo().getRank().equals(Rank.RANK_8) || move.getTo().getRank().equals(Rank.RANK_1)) &&
+			    (board.getPiece(move.getFrom()) == Piece.BLACK_PAWN || board.getPiece(move.getFrom()) == Piece.WHITE_PAWN));  
+	  }
 
   /**
    * Retrieves a list of all legal moveable squares from the current board state.
@@ -150,6 +157,42 @@ public class Game {
         .filter(move -> move.getFrom() == square)
         .map(move -> move.getTo())
         .collect(Collectors.toList());
+  }
+  
+  public void doPromotionMove(int piece, Square origin, Square destination) {
+	  System.out.println(piece);
+	  Piece promotedTo;
+	  switch(piece) {
+	  case 7:
+		  promotedTo = Piece.BLACK_KNIGHT;
+		  break;
+	  case 4:
+		  promotedTo = Piece.BLACK_QUEEN;
+		  break;
+	  case 5:
+		  promotedTo = Piece.BLACK_ROOK;
+		  break;
+	  case 6:
+		  promotedTo = Piece.BLACK_BISHOP;
+		  break;
+	  case 3:
+		  promotedTo = Piece.WHITE_KNIGHT;
+		  break;
+	  case 0:
+		  promotedTo = Piece.WHITE_QUEEN;
+		  break;
+	  case 1:
+		  promotedTo = Piece.WHITE_ROOK;
+		  break;
+	  case 2:
+		  promotedTo = Piece.WHITE_BISHOP;
+		  break;
+		  default:
+			  promotedTo = Piece.WHITE_QUEEN;
+	  }
+	  Move promotionMove = new Move(origin, destination, promotedTo);
+	  board.doMove(promotionMove);
+	  movelist.add(promotionMove);
   }
 
   public String toFEN() {
