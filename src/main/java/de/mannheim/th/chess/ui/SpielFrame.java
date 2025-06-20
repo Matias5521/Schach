@@ -8,14 +8,16 @@ import com.github.bhlangonijr.chesslib.move.Move;
 
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
+import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +27,7 @@ import javax.swing.JSplitPane;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +42,7 @@ public class SpielFrame extends JFrame {
   private HashMap<JButton, String> belegungen = new HashMap<>();
   private JPanel panelLinks, panelRechts, contentPane;
   private Game game;
+  private Clock clock;
 
   private BoardMode mode;
   private Square selectedSquare;
@@ -50,12 +54,15 @@ public class SpielFrame extends JFrame {
   /**
    * Create the frame.
    */
-  public SpielFrame() {
+  public SpielFrame(Game game) {
 
-    game = new Game();
+    this.game = game;
+    this.clock = game.getClock();
+    this.clock.start();
+    
     mode = BoardMode.normal;
 
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setBounds(100, 100, 1920, 1080);
     setTitle("Schach");
     setAlwaysOnTop(true);
@@ -71,15 +78,43 @@ public class SpielFrame extends JFrame {
 
     // Rechtes Panel für Steuerung oder zusätzliche Eingaben
     panelRechts = new JPanel();
-    panelRechts.setBackground(Color.LIGHT_GRAY);
-
+    panelRechts.setBackground(new Color(90,90,90));
+    panelRechts.setLayout(new BoxLayout(panelRechts, BoxLayout.Y_AXIS));
+    
+    
+    JLabel pl1 = new JLabel("Player 1:");
+    pl1.setFont(new Font("Calibri", Font.BOLD, 35));
+    pl1.setForeground(Color.BLACK);
+    pl1.setAlignmentX(Component.LEFT_ALIGNMENT);
+    panelRechts.add(pl1);
+    
+    contentPane.add(Box.createVerticalStrut(15));
+    
+    //Zeitangabe Player1
+    JLabel clock1 = clock.getClock2();
+    panelRechts.add(clock1);
+  
+    contentPane.add(Box.createVerticalStrut(15));
+    
+    JLabel pl2 = new JLabel("Player 2:");
+    pl2.setFont(new Font("Calibri", Font.BOLD, 35));
+    pl2.setForeground(Color.BLACK);
+    pl2.setAlignmentX(Component.LEFT_ALIGNMENT);
+    panelRechts.add(pl2);
+    
+    //Zeitangabe Player2
+    JLabel clock2 = clock.getClock1();
+    panelRechts.add(clock2);
+    
     // JSplitPane horizontal (linke und rechte Hälfte)
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelLinks, panelRechts);
-    splitPane.setResizeWeight(0.70);
-    splitPane.setDividerSize(5);
+    splitPane.setResizeWeight(0.65);
+    splitPane.setBackground(Color.BLACK);
+    splitPane.setDividerSize(0);
     splitPane.setEnabled(false);
 
     contentPane.add(splitPane, BorderLayout.CENTER);
+   
     setVisible(true);
   }
 
@@ -109,32 +144,6 @@ public class SpielFrame extends JFrame {
     panelLinks.revalidate();
     panelLinks.repaint();
 
-    // // Bild laden und Cursor im gesamten Frame setzen
-    // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
-    // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-    // Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
-    // new Point(0, 0),
-    // "figurCursor");
-    // setCursor(figurCursor);
-
-    // }else
-    // {
-    //
-    // // wenn gerade Figur ausgewählt wird...
-    // buttonChoosed = (JButton) e.getSource();
-    // symbolChoosed = belegungen.get(buttonChoosed);
-    // // System.out.println(symbolChoosed+" wurde gewählt.");
-    // // setzt cursor auf spielfigur für die animation
-    // String pfad = "src/main/resources/" + (int) symbolChoosed.toCharArray()[2] +
-    // ".png";
-    //
-    // // Bild laden und Cursor im gesamten Frame setzen
-    // Image image = Toolkit.getDefaultToolkit().getImage(pfad);
-    // Image scaled = image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-    // Cursor figurCursor = Toolkit.getDefaultToolkit().createCustomCursor(scaled,
-    // new Point(0, 0),
-    // "figurCursor");
-    // setCursor(figurCursor);
   }
 
   private int mirrowedGrid(int i) {
@@ -205,10 +214,10 @@ public class SpielFrame extends JFrame {
     for (int i = 0; i < 64; i++) {
       JButton b = buttons.get(i);
       if ((i / 8 + i % 8) % 2 == 0) {
-        logger.info("Helles Feld erstellt." + i);
+        //logger.info("Helles Feld erstellt." + i);
         b.setBackground(new Color(90, 90, 90));
       } else {
-        logger.info("Dunkles Feld erstellt." + i);
+        //logger.info("Dunkles Feld erstellt." + i);
         b.setBackground(new Color(65, 65, 65));
       }
     }

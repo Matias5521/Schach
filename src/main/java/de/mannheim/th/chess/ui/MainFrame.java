@@ -22,8 +22,6 @@ import java.awt.Color;
 
 public class MainFrame extends JFrame {
 
-	private ArrayList<SpielFrame> spiele = new ArrayList<>();
-
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
@@ -76,8 +74,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				SpielFrame sp = new SpielFrame();
-				spiele.add(sp);
+				ModeSelectionFrame ms = new ModeSelectionFrame();
 
 			}
 
@@ -115,7 +112,7 @@ public class MainFrame extends JFrame {
 
 		contentPane.add(Box.createVerticalStrut(15));
 
-		JButton btnNewButton_2 = new JButton("Spiel beenden");
+		JButton btnNewButton_2 = new JButton("App beenden");
 		
 		btnNewButton_2.setBackground(Color.LIGHT_GRAY);
 		btnNewButton_2.setForeground(Color.BLACK);
