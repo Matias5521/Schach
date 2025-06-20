@@ -5,9 +5,11 @@ package de.mannheim.th.chess.utl;
  */
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -54,12 +56,17 @@ public class Clock extends Thread implements Runnable {
 //		player2Panel.setBackground(Color.BLACK);
 //		clockFrame.setBounds(1000, 500, 10000, 10000);
 //		clockFrame.setLayout(new BorderLayout());
-		clock1 = new JLabel(" " + minutes + ":00 ");
+		clock1 = new JLabel("" + minutes + ":00 ");
+		clock1.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0)); 
 		clock1.setForeground(Color.BLACK);
 		clock1.setFont(new Font("Calibri", Font.BOLD, 35));
-		clock2 = new JLabel(" " + minutes + ":00 ");
+		clock1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		clock2 = new JLabel("" + minutes + ":00 ");
+		clock2.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0)); 
 		clock2.setForeground(Color.BLACK);
 		clock2.setFont(new Font("Calibri", Font.BOLD, 35));
+		clock2.setAlignmentX(Component.CENTER_ALIGNMENT);
 //		player1Panel.add(clock1);
 //		player2Panel.add(clock2);
 //		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, player1Panel, player2Panel);

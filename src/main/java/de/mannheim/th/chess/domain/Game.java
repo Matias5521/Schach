@@ -170,4 +170,8 @@ public class Game {
 	public Clock getClock() {
 		return this.clock;
 	}
+
+	public boolean isZuruecknahme() {
+		return zuruecknahme;
+	}
 }

@@ -24,284 +24,456 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SpielFrame extends JFrame {
 
-  private static final Logger logger = LogManager.getLogger(App.class);
+	private static final Logger logger = LogManager.getLogger(App.class);
 
-  private static final long serialVersionUID = 1L;
-  private ArrayList<JButton> buttons = new ArrayList<>();
-  private HashMap<JButton, String> belegungen = new HashMap<>();
-  private JPanel panelLinks, panelRechts, contentPane;
-  private Game game;
-  private Clock clock;
+	private static final long serialVersionUID = 1L;
+	private ArrayList<JButton> buttons = new ArrayList<>();
+	private HashMap<JButton, String> belegungen = new HashMap<>();
+	private JPanel panelLinks, panelRechts, contentPane;
+	private Game game;
+	private Clock clock;
 
-  private BoardMode mode;
-  private Square selectedSquare;
+	private BoardMode mode;
+	private Square selectedSquare;
 
-  public enum BoardMode {
-    normal, pieceSelected, finished
-  }
+	public enum BoardMode {
+		normal, pieceSelected, finished
+	}
 
-  /**
-   * Create the frame.
-   */
-  public SpielFrame(Game game) {
+	/**
+	 * Create the frame.
+	 */
+	public SpielFrame(Game game) {
 
-    this.game = game;
-    this.clock = game.getClock();
-    this.clock.start();
-    
-    mode = BoardMode.normal;
+		this.game = game;
+		this.clock = game.getClock();
+		this.clock.start();
 
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setBounds(100, 100, 1920, 1080);
-    setTitle("Schach");
-    setAlwaysOnTop(true);
+		mode = BoardMode.normal;
 
-    contentPane = new JPanel();
-    contentPane.setLayout(new BorderLayout());
-    setContentPane(contentPane);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 1920, 1080);
+		setTitle("Schach");
+		setAlwaysOnTop(true);
 
-    // Linkes Panel mit GridLayout 8x8 für Schachbrett
-    panelLinks = new JPanel(new GridLayout(8, 8));
+		contentPane = new JPanel();
+		contentPane.setLayout(new BorderLayout());
+		setContentPane(contentPane);
 
-    erstelleBrett();
+		// Linkes Panel mit GridLayout 8x8 für Schachbrett
+		panelLinks = new JPanel(new GridLayout(8, 8));
 
-    // Rechtes Panel für Steuerung oder zusätzliche Eingaben
-    panelRechts = new JPanel();
-    panelRechts.setBackground(new Color(90,90,90));
-    panelRechts.setLayout(new BoxLayout(panelRechts, BoxLayout.Y_AXIS));
-    
-    
-    JLabel pl1 = new JLabel("Player 1:");
-    pl1.setFont(new Font("Calibri", Font.BOLD, 35));
-    pl1.setForeground(Color.BLACK);
-    pl1.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panelRechts.add(pl1);
-    
-    contentPane.add(Box.createVerticalStrut(15));
-    
-    //Zeitangabe Player1
-    JLabel clock1 = clock.getClock2();
-    panelRechts.add(clock1);
-  
-    contentPane.add(Box.createVerticalStrut(15));
-    
-    JLabel pl2 = new JLabel("Player 2:");
-    pl2.setFont(new Font("Calibri", Font.BOLD, 35));
-    pl2.setForeground(Color.BLACK);
-    pl2.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panelRechts.add(pl2);
-    
-    //Zeitangabe Player2
-    JLabel clock2 = clock.getClock1();
-    panelRechts.add(clock2);
-    
-    // JSplitPane horizontal (linke und rechte Hälfte)
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelLinks, panelRechts);
-    splitPane.setResizeWeight(0.65);
-    splitPane.setBackground(Color.BLACK);
-    splitPane.setDividerSize(0);
-    splitPane.setEnabled(false);
+		erstelleBrett();
 
-    contentPane.add(splitPane, BorderLayout.CENTER);
-   
-    setVisible(true);
-  }
+		// Rechtes Panel für Steuerung oder zusätzliche Eingaben
+		panelRechts = new JPanel();
+		panelRechts.setBackground(new Color(90, 90, 90));
+		panelRechts.setLayout(new BoxLayout(panelRechts, BoxLayout.Y_AXIS));
 
-  public void setBoardMode(BoardMode bm) {
-    this.mode = bm;
-  }
+		// Panel für alle Eingaben von Player 2
+		panelRechts.add(getUiPlayerTwo());
+		
+		// Panel für Statistikanzeigen
+		panelRechts.add(getUiStatistik());
 
-  public void setSelectedSquare(Square sq) {
-    this.selectedSquare = sq;
-  }
+		//Panel für alle Eingaben von Player 1
+		panelRechts.add(getUiPlayerOne());
+		
+		// JSplitPane horizontal (linke und rechte Hälfte)
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelLinks, panelRechts);
+		splitPane.setResizeWeight(0.75);
+		splitPane.setBackground(Color.BLACK);
+		splitPane.setDividerSize(1);
+		splitPane.setEnabled(false);
 
-  public HashMap<JButton, String> getBelegung() {
-    return this.belegungen;
-  }
+		contentPane.add(splitPane, BorderLayout.CENTER);
 
-  /**
-   * Erstellt alle Buttons und fügt sie dem Frame hinzu.
-   */
-  public void erstelleBrett() {
+		setVisible(true);
+	}
 
-    this.clearButtons();
-    this.setDefaultBackground();
-    this.setButtonsActions();
+	public void setBoardMode(BoardMode bm) {
+		this.mode = bm;
+	}
 
-    ladeBrett();
+	public void setSelectedSquare(Square sq) {
+		this.selectedSquare = sq;
+	}
 
-    panelLinks.revalidate();
-    panelLinks.repaint();
+	public HashMap<JButton, String> getBelegung() {
+		return this.belegungen;
+	}
 
-  }
+	/**
+	 * Erstellt alle Buttons und fügt sie dem Frame hinzu.
+	 */
+	public void erstelleBrett() {
 
-  private int mirrowedGrid(int i) {
-    return 63 - (((i / 8) * 8) + (7 - i % 8));
-  }
+		this.clearButtons();
+		this.setDefaultBackground();
+		this.setButtonsActions();
 
-  /**
-   * holt sich FEN-Zeichenkette und extrahiert daraus die Positionen der Figuren
-   */
-  private void ladeBrett() {
-    // System.out.println(game.toFEN());
+		ladeBrett();
 
-    char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
-    int i = 0;
-    for (int j = 0; j < fen.length; j++) {
-      if (Character.isDigit(fen[j])) {
-        int leerfelder = Character.getNumericValue(fen[j]);
-        for (int k = 0; k < leerfelder; k++) {
-          belegungen.put(buttons.get(i), "n-n");
-          // buttons.get(i).setEnabled(false); // erstmal deaktivieren, weil leere Felder
-          // nicht ckickbar sein sollten.
-          i++;
-        }
-        continue;
-      } else if (fen[j] >= 65 && fen[j] <= 90) { // ein Großbuchstabe, also
-        belegungen.put(buttons.get(i), "w-" + fen[j]);
-      } else if (fen[j] >= 97 && fen[j] <= 122) { // ein Kleinbuchstabe, also
-        belegungen.put(buttons.get(i), "b-" + fen[j]);
-        // buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß
-        // beginnen kann
-      }
-      buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
-      buttons.get(i).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+		panelLinks.revalidate();
+		panelLinks.repaint();
 
-      i++;
+	}
 
-    }
-  }
+	private int mirrowedGrid(int i) {
+		return 63 - (((i / 8) * 8) + (7 - i % 8));
+	}
 
-  /**
-   * Clears the existing buttons from the button list, panellinks and fills them
-   * with new blank ones.
-   */
-  private void clearButtons() {
-    buttons.clear();
-    panelLinks.removeAll();
+	/**
+	 * holt sich FEN-Zeichenkette und extrahiert daraus die Positionen der Figuren
+	 */
+	private void ladeBrett() {
+		// System.out.println(game.toFEN());
 
-    for (int i = 0; i < 64; i++) {
-      JButton b = new JButton();
+		char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
+		int i = 0;
+		for (int j = 0; j < fen.length; j++) {
+			if (Character.isDigit(fen[j])) {
+				int leerfelder = Character.getNumericValue(fen[j]);
+				for (int k = 0; k < leerfelder; k++) {
+					belegungen.put(buttons.get(i), "n-n");
+					// buttons.get(i).setEnabled(false); // erstmal deaktivieren, weil leere Felder
+					// nicht ckickbar sein sollten.
+					i++;
+				}
+				continue;
+			} else if (fen[j] >= 65 && fen[j] <= 90) { // ein Großbuchstabe, also
+				belegungen.put(buttons.get(i), "w-" + fen[j]);
+			} else if (fen[j] >= 97 && fen[j] <= 122) { // ein Kleinbuchstabe, also
+				belegungen.put(buttons.get(i), "b-" + fen[j]);
+				// buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß
+				// beginnen kann
+			}
+			buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+			buttons.get(i).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
 
-      b.setEnabled(false);
+			i++;
 
-      // style
-      b.setFocusPainted(false);
-      b.setFont(new Font("Arial", Font.PLAIN, 30));
-      b.setForeground(Color.WHITE);
-      b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-      b.setName(i + "");
+		}
+	}
 
-      buttons.add(b);
-    }
-  }
+	/**
+	 * Clears the existing buttons from the button list, panellinks and fills them
+	 * with new blank ones.
+	 */
+	private void clearButtons() {
+		buttons.clear();
+		panelLinks.removeAll();
 
-  /**
-   * Sets the default background color for the buttons in the grid.
-   */
-  private void setDefaultBackground() {
-    for (int i = 0; i < 64; i++) {
-      JButton b = buttons.get(i);
-      if ((i / 8 + i % 8) % 2 == 0) {
-        //logger.info("Helles Feld erstellt." + i);
-        b.setBackground(new Color(90, 90, 90));
-      } else {
-        //logger.info("Dunkles Feld erstellt." + i);
-        b.setBackground(new Color(65, 65, 65));
-      }
-    }
-  }
+		for (int i = 0; i < 64; i++) {
+			JButton b = new JButton();
 
-  /*
-   * Switches the button actions depending on the boardmode
-   */
-  private void setButtonsActions() {
+			b.setEnabled(false);
 
-    List<Square> selectables;
+			// style
+			b.setFocusPainted(false);
+			b.setFont(new Font("Arial", Font.PLAIN, 30));
+			b.setForeground(Color.WHITE);
+			b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+			b.setName(i + "");
 
-    switch (this.mode) {
-      case BoardMode.normal:
-        selectables = game.getAllLegalMoveableSquares();
+			buttons.add(b);
+		}
+	}
 
-        for (Square square : selectables) {
-          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
-          b.setEnabled(true);
-          // b.setBackground(Color.green);
-          b.addActionListener(new ButtonSelectPieceListener(this, square));
-        }
+	/**
+	 * Sets the default background color for the buttons in the grid.
+	 */
+	private void setDefaultBackground() {
+		for (int i = 0; i < 64; i++) {
+			JButton b = buttons.get(i);
+			if ((i / 8 + i % 8) % 2 == 0) {
+				// logger.info("Helles Feld erstellt." + i);
+				b.setBackground(new Color(90, 90, 90));
+			} else {
+				// logger.info("Dunkles Feld erstellt." + i);
+				b.setBackground(new Color(65, 65, 65));
+			}
+		}
+	}
 
-        break;
+	/*
+	 * Switches the button actions depending on the boardmode
+	 */
+	private void setButtonsActions() {
 
-      case BoardMode.pieceSelected:
+		List<Square> selectables;
 
-        JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
-        s.setEnabled(true);
-        s.setBackground(new Color(165, 42, 42));
-        s.addActionListener(new ButtonToNormalListener(this)); // cancel action
+		switch (this.mode) {
+		case BoardMode.normal:
+			selectables = game.getAllLegalMoveableSquares();
 
-        selectables = game.getLegalMoveableSquares(selectedSquare);
+			for (Square square : selectables) {
+				JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+				b.setEnabled(true);
+				// b.setBackground(Color.green);
+				b.addActionListener(new ButtonSelectPieceListener(this, square));
+			}
 
-        for (
+			break;
 
-        Square square : selectables) {
-          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
-          final Move move = new Move(selectedSquare, square);
-          b.setEnabled(true);
-          b.setBackground(new Color(230, 100, 100));
-          b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
-        }
+		case BoardMode.pieceSelected:
 
-        break;
+			JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
+			s.setEnabled(true);
+			s.setBackground(new Color(165, 42, 42));
+			s.addActionListener(new ButtonToNormalListener(this)); // cancel action
 
-      case finished:
-        clearButtons();
-        break;
-      default:
-        break;
+			selectables = game.getLegalMoveableSquares(selectedSquare);
 
-    }
+			for (
 
-    for (JButton b : buttons) {
-      panelLinks.add(b);
-    }
-  }
+			Square square : selectables) {
+				JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+				final Move move = new Move(selectedSquare, square);
+				b.setEnabled(true);
+				b.setBackground(new Color(230, 100, 100));
+				b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
+			}
 
-  public void showDraw() {
-    JFrame frame = new JFrame("Result");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(300, 150);
-    frame.setLayout(null);
+			break;
 
-    JLabel jl = new JLabel("1/2 - 1/2");
-    jl.setBounds(50, 30, 200, 25);
-    jl.setFont(new Font("Tahoma", Font.BOLD, 20));
-    frame.add(jl);
-    frame.setVisible(true);
+		case finished:
+			clearButtons();
+			break;
+		default:
+			break;
 
-  }
+		}
 
-  public void showWin(int player) {
-    JFrame frame = new JFrame("Result");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(300, 150);
-    frame.setLayout(null);
+		for (JButton b : buttons) {
+			panelLinks.add(b);
+		}
+	}
 
-    JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
-    jl.setBounds(50, 30, 200, 25);
-    jl.setFont(new Font("Tahoma", Font.BOLD, 20));
-    frame.add(jl);
-    frame.setVisible(true);
-  }
+	public void showDraw() {
+		JFrame frame = new JFrame("Result");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(300, 150);
+		frame.setLayout(null);
+
+		JLabel jl = new JLabel("1/2 - 1/2");
+		jl.setBounds(50, 30, 200, 25);
+		jl.setFont(new Font("Tahoma", Font.BOLD, 20));
+		frame.add(jl);
+		frame.setVisible(true);
+
+	}
+
+	public void showWin(int player) {
+		JFrame frame = new JFrame("Result");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(300, 150);
+		frame.setLayout(null);
+
+		JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
+		jl.setBounds(50, 30, 200, 25);
+		jl.setFont(new Font("Tahoma", Font.BOLD, 20));
+		frame.add(jl);
+		frame.setVisible(true);
+	}
+
+	private JPanel getUiPlayerTwo() {
+
+		JPanel playerTwo = new JPanel();
+		playerTwo.setBackground(new Color(90, 90, 90));
+		playerTwo.setLayout(new BoxLayout(playerTwo, BoxLayout.Y_AXIS));
+
+		playerTwo.add(Box.createVerticalStrut(15));
+
+		JLabel pl2 = new JLabel("Player 2:");
+		pl2.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		pl2.setFont(new Font("Calibri", Font.BOLD, 35));
+		pl2.setForeground(Color.BLACK);
+		pl2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		playerTwo.add(pl2);
+
+		playerTwo.add(Box.createVerticalStrut(10));
+
+		JLabel clock1 = clock.getClock2();
+		playerTwo.add(clock1);
+
+		playerTwo.add(Box.createVerticalStrut(10));
+
+		// Button zurücknahme und aufgeben für Player 2
+		JPanel aufgebenUndo = new JPanel();
+		aufgebenUndo.setBackground(new Color(90, 90, 90));
+		aufgebenUndo.setLayout(new BoxLayout(aufgebenUndo, BoxLayout.X_AXIS));
+
+		if (game.isZuruecknahme()) {
+			JButton undo = new JButton("Zug zurücknehmen");
+			undo.setBackground(Color.LIGHT_GRAY);
+			undo.setForeground(Color.BLACK);
+			undo.setFont(new Font("Tahoma", Font.BOLD, 16));
+			undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+			aufgebenUndo.add(undo);
+
+			// Button-Listener
+			undo.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+				}
+			});
+		}
+
+		aufgebenUndo.add(Box.createHorizontalStrut(10));
+
+		JButton aufgeben = new JButton("Aufgeben");
+		aufgeben.setBackground(Color.LIGHT_GRAY);
+		aufgeben.setForeground(Color.BLACK);
+		aufgeben.setFont(new Font("Tahoma", Font.BOLD, 16));
+		aufgeben.setAlignmentX(Component.CENTER_ALIGNMENT);
+		aufgebenUndo.add(aufgeben);
+
+		// Button-Listener
+		aufgeben.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		aufgebenUndo.add(Box.createHorizontalStrut(10));
+
+		JButton safe = new JButton("Spielstand sichern");
+		safe.setBackground(Color.LIGHT_GRAY);
+		safe.setForeground(Color.BLACK);
+		safe.setFont(new Font("Tahoma", Font.BOLD, 16));
+		safe.setAlignmentX(Component.CENTER_ALIGNMENT);
+		aufgebenUndo.add(safe);
+
+		// Button-Listener
+		safe.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		playerTwo.add(aufgebenUndo);
+
+		playerTwo.add(Box.createVerticalStrut(10));
+
+		return playerTwo;
+	}
+	
+	private JPanel getUiStatistik() {
+		
+		JPanel statistik = new JPanel();
+		statistik.setBackground(new Color(90, 90, 90));
+		statistik.setLayout(new BoxLayout(statistik, BoxLayout.Y_AXIS));
+		
+		JTextArea ausgabe = new JTextArea();
+		ausgabe.setEditable(false);
+		ausgabe.setBackground(new Color(75,75,75));
+		ausgabe.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		
+		statistik.add(ausgabe);
+		return statistik;
+	}
+
+	private JPanel getUiPlayerOne() {
+
+		JPanel playerOne = new JPanel();
+		playerOne.setBackground(new Color(90, 90, 90));
+		playerOne.setLayout(new BoxLayout(playerOne, BoxLayout.Y_AXIS));
+
+		playerOne.add(Box.createVerticalStrut(10));
+
+		// Button zurücknahme und aufgeben für Player 1
+		JPanel aufgebenUndo = new JPanel();
+		aufgebenUndo.setBackground(new Color(90, 90, 90));
+		aufgebenUndo.setLayout(new BoxLayout(aufgebenUndo, BoxLayout.X_AXIS));
+
+		if (game.isZuruecknahme()) {
+			JButton undo = new JButton("Zug zurücknehmen");
+			undo.setBackground(Color.LIGHT_GRAY);
+			undo.setForeground(Color.BLACK);
+			undo.setFont(new Font("Tahoma", Font.BOLD, 16));
+			undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+			aufgebenUndo.add(undo);
+
+			// Button-Listener
+			undo.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+				}
+			});
+		}
+
+		aufgebenUndo.add(Box.createHorizontalStrut(10));
+
+		JButton aufgeben = new JButton("Aufgeben");
+		aufgeben.setBackground(Color.LIGHT_GRAY);
+		aufgeben.setForeground(Color.BLACK);
+		aufgeben.setFont(new Font("Tahoma", Font.BOLD, 16));
+		aufgeben.setAlignmentX(Component.CENTER_ALIGNMENT);
+		aufgebenUndo.add(aufgeben);
+
+		// Button-Listener
+		aufgeben.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		aufgebenUndo.add(Box.createHorizontalStrut(10));
+
+		JButton safe = new JButton("Spielstand sichern");
+		safe.setBackground(Color.LIGHT_GRAY);
+		safe.setForeground(Color.BLACK);
+		safe.setFont(new Font("Tahoma", Font.BOLD, 16));
+		safe.setAlignmentX(Component.CENTER_ALIGNMENT);
+		aufgebenUndo.add(safe);
+
+		// Button-Listener
+		safe.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		
+		playerOne.add(aufgebenUndo);
+
+		playerOne.add(Box.createVerticalStrut(10));
+
+		JLabel clock1 = clock.getClock1();
+		playerOne.add(clock1);
+
+		playerOne.add(Box.createVerticalStrut(10));
+
+		JLabel pl2 = new JLabel("Player 1:");
+		pl2.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		pl2.setFont(new Font("Calibri", Font.BOLD, 35));
+		pl2.setForeground(Color.BLACK);
+		pl2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		playerOne.add(pl2);
+
+		return playerOne;
+	}
 
 }
