@@ -105,6 +105,11 @@ public class Game {
 		this.movelist.add(move);
 
 	}
+	
+	public void undo() {
+		this.board.undoMove();
+		this.movelist.removeLast();
+	}
 
 	public boolean isMate() {
 		return board.isMated();
@@ -173,5 +178,12 @@ public class Game {
 
 	public boolean isZuruecknahme() {
 		return zuruecknahme;
+	}
+	
+	public boolean movesNotNull() {
+		if(movelist.getLast() != null) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -1,5 +1,6 @@
 package de.mannheim.th.chess.controller;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,6 +24,9 @@ public class ButtonMovePieceListener implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     this.game.playMove(this.mv);
+    sf.getUndo().setText("Zug zurücknehmen");
+    sf.getUndo2().setText("Zug zurücknehmen");
+	
     if (this.game.isDraw()) {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);

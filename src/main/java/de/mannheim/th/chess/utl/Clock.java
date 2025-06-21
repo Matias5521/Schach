@@ -59,13 +59,13 @@ public class Clock extends Thread implements Runnable {
 		clock1 = new JLabel("" + minutes + ":00 ");
 		clock1.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0)); 
 		clock1.setForeground(Color.BLACK);
-		clock1.setFont(new Font("Calibri", Font.BOLD, 35));
+		clock1.setFont(new Font("Calibri", Font.BOLD, 40));
 		clock1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		clock2 = new JLabel("" + minutes + ":00 ");
 		clock2.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0)); 
 		clock2.setForeground(Color.BLACK);
-		clock2.setFont(new Font("Calibri", Font.BOLD, 35));
+		clock2.setFont(new Font("Calibri", Font.BOLD, 40));
 		clock2.setAlignmentX(Component.CENTER_ALIGNMENT);
 //		player1Panel.add(clock1);
 //		player2Panel.add(clock2);
@@ -140,6 +140,10 @@ public class Clock extends Thread implements Runnable {
 			clockLogger.info("Neue klassische Schachuhr wurde erstellt");
 			break;
 		}
+	}
+	
+	public void switchClock() {
+		whiteToMove = !whiteToMove;
 	}
 
 	public JLabel getClock1() {

@@ -12,6 +12,7 @@ import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
+import de.mannheim.th.chess.controller.ButtonUndoMoveListener;
 
 import java.awt.Font;
 
@@ -46,14 +47,20 @@ public class SpielFrame extends JFrame {
 	private ArrayList<JButton> buttons = new ArrayList<>();
 	private HashMap<JButton, String> belegungen = new HashMap<>();
 	private JPanel panelLinks, panelRechts, contentPane;
+	private JButton undo, undo2;
 	private Game game;
 	private Clock clock;
 
 	private BoardMode mode;
+	private Zuruecknahme undoMove;
 	private Square selectedSquare;
 
 	public enum BoardMode {
 		normal, pieceSelected, finished
+	}
+	
+	public enum Zuruecknahme {
+		white, black, nobody
 	}
 
 	/**
@@ -88,13 +95,13 @@ public class SpielFrame extends JFrame {
 
 		// Panel für alle Eingaben von Player 2
 		panelRechts.add(getUiPlayerTwo());
-		
+
 		// Panel für Statistikanzeigen
 		panelRechts.add(getUiStatistik());
 
-		//Panel für alle Eingaben von Player 1
+		// Panel für alle Eingaben von Player 1
 		panelRechts.add(getUiPlayerOne());
-		
+
 		// JSplitPane horizontal (linke und rechte Hälfte)
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelLinks, panelRechts);
 		splitPane.setResizeWeight(0.75);
@@ -104,19 +111,8 @@ public class SpielFrame extends JFrame {
 
 		contentPane.add(splitPane, BorderLayout.CENTER);
 
+		
 		setVisible(true);
-	}
-
-	public void setBoardMode(BoardMode bm) {
-		this.mode = bm;
-	}
-
-	public void setSelectedSquare(Square sq) {
-		this.selectedSquare = sq;
-	}
-
-	public HashMap<JButton, String> getBelegung() {
-		return this.belegungen;
 	}
 
 	/**
@@ -177,6 +173,7 @@ public class SpielFrame extends JFrame {
 	 * with new blank ones.
 	 */
 	private void clearButtons() {
+		
 		buttons.clear();
 		panelLinks.removeAll();
 
@@ -221,6 +218,7 @@ public class SpielFrame extends JFrame {
 
 		switch (this.mode) {
 		case BoardMode.normal:
+		
 			selectables = game.getAllLegalMoveableSquares();
 
 			for (Square square : selectables) {
@@ -321,7 +319,7 @@ public class SpielFrame extends JFrame {
 		aufgebenUndo.setLayout(new BoxLayout(aufgebenUndo, BoxLayout.X_AXIS));
 
 		if (game.isZuruecknahme()) {
-			JButton undo = new JButton("Zug zurücknehmen");
+			undo = new JButton("Zug zurücknehmen");
 			undo.setBackground(Color.LIGHT_GRAY);
 			undo.setForeground(Color.BLACK);
 			undo.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -329,13 +327,9 @@ public class SpielFrame extends JFrame {
 			aufgebenUndo.add(undo);
 
 			// Button-Listener
-			undo.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-
-				}
-			});
-		}
+			undo.addActionListener(new ButtonUndoMoveListener(this, this.game));
+		}		
+		
 
 		aufgebenUndo.add(Box.createHorizontalStrut(10));
 
@@ -377,18 +371,18 @@ public class SpielFrame extends JFrame {
 
 		return playerTwo;
 	}
-	
+
 	private JPanel getUiStatistik() {
-		
+
 		JPanel statistik = new JPanel();
 		statistik.setBackground(new Color(90, 90, 90));
 		statistik.setLayout(new BoxLayout(statistik, BoxLayout.Y_AXIS));
-		
+
 		JTextArea ausgabe = new JTextArea();
 		ausgabe.setEditable(false);
-		ausgabe.setBackground(new Color(75,75,75));
+		ausgabe.setBackground(new Color(75, 75, 75));
 		ausgabe.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		
+
 		statistik.add(ausgabe);
 		return statistik;
 	}
@@ -407,20 +401,16 @@ public class SpielFrame extends JFrame {
 		aufgebenUndo.setLayout(new BoxLayout(aufgebenUndo, BoxLayout.X_AXIS));
 
 		if (game.isZuruecknahme()) {
-			JButton undo = new JButton("Zug zurücknehmen");
-			undo.setBackground(Color.LIGHT_GRAY);
-			undo.setForeground(Color.BLACK);
-			undo.setFont(new Font("Tahoma", Font.BOLD, 16));
-			undo.setAlignmentX(Component.CENTER_ALIGNMENT);
-			aufgebenUndo.add(undo);
+			undo2 = new JButton("Zug zurücknehmen");
+			undo2.setBackground(Color.LIGHT_GRAY);
+			undo2.setForeground(Color.BLACK);
+			undo2.setFont(new Font("Tahoma", Font.BOLD, 16));
+			undo2.setAlignmentX(Component.CENTER_ALIGNMENT);
+			aufgebenUndo.add(undo2);
 
 			// Button-Listener
-			undo.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-
-				}
-			});
+			undo2.addActionListener(new ButtonUndoMoveListener(this, this.game));
+				
 		}
 
 		aufgebenUndo.add(Box.createHorizontalStrut(10));
@@ -456,10 +446,10 @@ public class SpielFrame extends JFrame {
 
 			}
 		});
-		
+
 		playerOne.add(aufgebenUndo);
 
-		playerOne.add(Box.createVerticalStrut(10));
+		playerOne.add(Box.createVerticalStrut(15));
 
 		JLabel clock1 = clock.getClock1();
 		playerOne.add(clock1);
@@ -474,6 +464,57 @@ public class SpielFrame extends JFrame {
 		playerOne.add(pl2);
 
 		return playerOne;
+	}
+	
+	public void undoMove() {
+		
+		switch(this.undoMove) {
+		
+		case white:
+			
+			break;
+			
+		case black:
+			break;
+			
+		case nobody:
+			break;
+		
+		default:
+			break;
+		}
+	}
+	
+	public void setBoardMode(BoardMode bm) {
+		this.mode = bm;
+	}
+
+	public void setSelectedSquare(Square sq) {
+		this.selectedSquare = sq;
+	}
+
+	public HashMap<JButton, String> getBelegung() {
+		return this.belegungen;
+	}
+	
+	public void setZuruecknahme(Zuruecknahme z) {
+		this.undoMove = z;
+	}
+	
+	public JButton getUndo() {
+		return undo;
+	}
+	
+	public JButton getUndo2() {
+		return undo2;
+	}
+	
+	public BoardMode getMode() {
+		return mode;
+	}
+	
+	public Clock getClock() {
+		return clock;
 	}
 
 }
