@@ -238,48 +238,19 @@ public class SpielFrame extends JFrame {
 
 			selectables = game.getLegalMoveableSquares(selectedSquare);
 
-			for (
-
-			Square square : selectables) {
-				JButton b = buttons.get(mirrowedGrid(square.ordinal()));
-				final Move move = new Move(selectedSquare, square);
-				b.setEnabled(true);
-				b.setBackground(new Color(230, 100, 100));
-				for (ActionListener al : b.getActionListeners()) {
-				    b.removeActionListener(al);
-				}
-				b.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if(game.isPromotionMove(move)) {
-							game.doPromotionMove(showPromotion(), selectedSquare, square);
-							
-						} else {
-							game.playMove(move);
-						}
-						if (game.isDraw()) {
-							game.stopClock();
-							mode = BoardMode.finished;
-							showDraw();
-						} else if (game.isMate()) {
-							game.stopClock();
-							mode = BoardMode.finished;
-							showWin(game.getActivePlayer());
-						}
-						mode = BoardMode.normal;
-						setCursor(null);
-						erstelleBrett();
-					}
-				});
-			}
-
-			break;
-
-		case finished:
-			clearButtons();
-			break;
-		default:
-			break;
+        for (Square square : selectables) {
+          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+          final Move move = new Move(selectedSquare, square);
+          b.setEnabled(true);
+          b.setBackground(new Color(230, 100, 100));
+          b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
+        }
+        break;
+      case finished:
+        clearButtons();
+        break;
+      default:
+        break;
 
 		}
 
@@ -323,24 +294,23 @@ public class SpielFrame extends JFrame {
 	    dialog.setLayout(new GridLayout(2, 2));
 	    dialog.setSize(300, 200);
 
-	    int[] pictures = {81, 82, 66, 78, 113, 114, 98, 110};
-	    
+    int[] pictures = { 81, 82, 66, 78, 113, 114, 98, 110 };
 
-	    for (int i = 0; i < 4; i++) {
-	        int index = (game.getActivePlayer() - 1) * 4 + i;
-	        JButton jb = new JButton();
-	        jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
-	        int selectedPiece = index;
-	        jb.addActionListener(e -> {
-	        	System.out.println("Test");
-	            result[0] = selectedPiece;
-	            dialog.dispose();
-	        });
-	        dialog.add(jb);
-	    }
+    for (int i = 0; i < 4; i++) {
+      int index = (game.getActivePlayer() - 1) * 4 + i;
+      JButton jb = new JButton();
+      jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
+      int selectedPiece = index;
+      jb.addActionListener(e -> {
+        System.out.println("Test");
+        result[0] = selectedPiece;
+        dialog.dispose();
+      });
+      dialog.add(jb);
+    }
 
-	    dialog.setLocationRelativeTo(null);
-	    dialog.setVisible(true);
+    dialog.setLocationRelativeTo(null);
+    dialog.setVisible(true);
 
 	    return result[0];
 	}
