@@ -92,22 +92,22 @@ public class Game {
     Move move = new Move(origin, desination);
     this.board.doMove(move);
     this.movelist.add(move);
-    
+
   }
-  
+
   public boolean isMate() {
-	  return board.isMated();
+    return board.isMated();
   }
-  
+
   public boolean isDraw() {
-	  return board.isDraw();
+    return board.isDraw();
   }
-  
+
   public int getActivePlayer() {
-	  if (board.getSideToMove() == Side.WHITE) {
-		  return 1;
-	  }
-	  return 2;
+    if (board.getSideToMove() == Side.WHITE) {
+      return 1;
+    }
+    return 2;
   }
 
   /**
@@ -123,15 +123,15 @@ public class Game {
         .collect(Collectors.toList());
 
   }
-  
+
   public void stopClock() {
-	  clock.endGame();
+    clock.endGame();
   }
-  
+
   public boolean isPromotionMove(Move move) {
-	  return ((move.getTo().getRank().equals(Rank.RANK_8) || move.getTo().getRank().equals(Rank.RANK_1)) &&
-			    (board.getPiece(move.getFrom()) == Piece.BLACK_PAWN || board.getPiece(move.getFrom()) == Piece.WHITE_PAWN));  
-	  }
+    return ((move.getTo().getRank().equals(Rank.RANK_8) || move.getTo().getRank().equals(Rank.RANK_1)) &&
+        (board.getPiece(move.getFrom()) == Piece.BLACK_PAWN || board.getPiece(move.getFrom()) == Piece.WHITE_PAWN));
+  }
 
   /**
    * Retrieves a list of all legal moveable squares from the current board state.
@@ -158,45 +158,48 @@ public class Game {
         .map(move -> move.getTo())
         .collect(Collectors.toList());
   }
-  
+
   public void doPromotionMove(int piece, Square origin, Square destination) {
-	  System.out.println(piece);
-	  Piece promotedTo;
-	  switch(piece) {
-	  case 7:
-		  promotedTo = Piece.BLACK_KNIGHT;
-		  break;
-	  case 4:
-		  promotedTo = Piece.BLACK_QUEEN;
-		  break;
-	  case 5:
-		  promotedTo = Piece.BLACK_ROOK;
-		  break;
-	  case 6:
-		  promotedTo = Piece.BLACK_BISHOP;
-		  break;
-	  case 3:
-		  promotedTo = Piece.WHITE_KNIGHT;
-		  break;
-	  case 0:
-		  promotedTo = Piece.WHITE_QUEEN;
-		  break;
-	  case 1:
-		  promotedTo = Piece.WHITE_ROOK;
-		  break;
-	  case 2:
-		  promotedTo = Piece.WHITE_BISHOP;
-		  break;
-		  default:
-			  promotedTo = Piece.WHITE_QUEEN;
-	  }
-	  Move promotionMove = new Move(origin, destination, promotedTo);
-	  board.doMove(promotionMove);
-	  movelist.add(promotionMove);
+    System.out.println(piece);
+    Piece promotedTo;
+    switch (piece) {
+      case 7:
+        promotedTo = Piece.BLACK_KNIGHT;
+        break;
+      case 4:
+        promotedTo = Piece.BLACK_QUEEN;
+        break;
+      case 5:
+        promotedTo = Piece.BLACK_ROOK;
+        break;
+      case 6:
+        promotedTo = Piece.BLACK_BISHOP;
+        break;
+      case 3:
+        promotedTo = Piece.WHITE_KNIGHT;
+        break;
+      case 0:
+        promotedTo = Piece.WHITE_QUEEN;
+        break;
+      case 1:
+        promotedTo = Piece.WHITE_ROOK;
+        break;
+      case 2:
+        promotedTo = Piece.WHITE_BISHOP;
+        break;
+      default:
+        promotedTo = Piece.WHITE_QUEEN;
+    }
+    Move promotionMove = new Move(origin, destination, promotedTo);
+    playMove(promotionMove);
   }
 
   public String toFEN() {
     board.toString();
     return board.getFen();
+  }
+
+  public Square getSelectedSquare() {
+    return this.getSelectedSquare();
   }
 }

@@ -22,7 +22,11 @@ public class ButtonMovePieceListener implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    this.game.playMove(this.mv);
+    if (game.isPromotionMove(this.mv))
+      game.doPromotionMove(this.sf.showPromotion(), mv.getFrom(), mv.getTo());
+    else
+      this.game.playMove(this.mv);
+
     if (this.game.isDraw()) {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);
