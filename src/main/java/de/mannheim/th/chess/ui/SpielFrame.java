@@ -245,53 +245,14 @@ public class SpielFrame extends JFrame {
 
         selectables = game.getLegalMoveableSquares(selectedSquare);
 
-        for (
-
-        Square square : selectables) {
+        for (Square square : selectables) {
           JButton b = buttons.get(mirrowedGrid(square.ordinal()));
           final Move move = new Move(selectedSquare, square);
           b.setEnabled(true);
           b.setBackground(new Color(230, 100, 100));
           b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
         }
-
-<<<<<<< HEAD
-			for (Square square : selectables) {
-				JButton b = buttons.get(mirrowedGrid(square.ordinal()));
-				final Move move = new Move(selectedSquare, square);
-				b.setEnabled(true);
-				b.setBackground(new Color(230, 100, 100));
-				for (ActionListener al : b.getActionListeners()) {
-				    b.removeActionListener(al);
-				}
-				b.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if(game.isPromotionMove(move)) {
-							game.doPromotionMove(showPromotion(), selectedSquare, square);
-							
-						} else {
-							game.playMove(move);
-						}
-						if (game.isDraw()) {
-							game.stopClock();
-							mode = BoardMode.finished;
-							showDraw();
-						} else if (game.isMate()) {
-							game.stopClock();
-							mode = BoardMode.finished;
-							showWin(game.getActivePlayer());
-						}
-						mode = BoardMode.normal;
-						setCursor(null);
-						erstelleBrett();
-					}
-				});
-			}
-=======
         break;
->>>>>>> branch 'buttonActions' of https://gitty.informatik.hs-mannheim.de/3020772/Schach.git
-
       case finished:
         clearButtons();
         break;
@@ -311,51 +272,39 @@ public class SpielFrame extends JFrame {
     frame.setSize(300, 150);
     frame.setLayout(null);
 
-<<<<<<< HEAD
-        JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
-        jl.setBounds(50, 30, 200, 25);
-        jl.setFont(new Font("Tahoma", Font.BOLD, 20));
-        frame.add(jl);
-        frame.setVisible(true);
-	}
-	
-	private int showPromotion() {
-	    final int[] result = {-1};
+    // JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
+    // jl.setBounds(50, 30, 200, 25);
+    // jl.setFont(new Font("Tahoma", Font.BOLD, 20));
+    // frame.add(jl);
+    // frame.setVisible(true);
+  }
 
-	    
-	    JDialog dialog = new JDialog(this, "Wähle eine Figur", true);
-	    dialog.setLayout(new GridLayout(2, 2));
-	    dialog.setSize(300, 200);
+  public int showPromotion() {
+    final int[] result = { -1 };
 
-	    int[] pictures = {81, 82, 66, 78, 113, 114, 98, 110};
-	    
+    JDialog dialog = new JDialog(this, "Wähle eine Figur", true);
+    dialog.setLayout(new GridLayout(2, 2));
+    dialog.setSize(300, 200);
 
-	    for (int i = 0; i < 4; i++) {
-	        int index = (game.getActivePlayer() - 1) * 4 + i;
-	        JButton jb = new JButton();
-	        jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
-	        int selectedPiece = index;
-	        jb.addActionListener(e -> {
-	        	System.out.println("Test");
-	            result[0] = selectedPiece;
-	            dialog.dispose();
-	        });
-	        dialog.add(jb);
-	    }
+    int[] pictures = { 81, 82, 66, 78, 113, 114, 98, 110 };
 
-	    dialog.setLocationRelativeTo(null);
-	    dialog.setVisible(true);
+    for (int i = 0; i < 4; i++) {
+      int index = (game.getActivePlayer() - 1) * 4 + i;
+      JButton jb = new JButton();
+      jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
+      int selectedPiece = index;
+      jb.addActionListener(e -> {
+        System.out.println("Test");
+        result[0] = selectedPiece;
+        dialog.dispose();
+      });
+      dialog.add(jb);
+    }
 
-	    return result[0];
-	}
-	
-=======
-    JLabel jl = new JLabel("1/2 - 1/2");
-    jl.setBounds(50, 30, 200, 25);
-    jl.setFont(new Font("Tahoma", Font.BOLD, 20));
-    frame.add(jl);
-    frame.setVisible(true);
+    dialog.setLocationRelativeTo(null);
+    dialog.setVisible(true);
 
+    return result[0];
   }
 
   public void showWin(int player) {
@@ -370,6 +319,5 @@ public class SpielFrame extends JFrame {
     frame.add(jl);
     frame.setVisible(true);
   }
->>>>>>> branch 'buttonActions' of https://gitty.informatik.hs-mannheim.de/3020772/Schach.git
 
 }
