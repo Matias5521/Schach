@@ -3,17 +3,30 @@ package de.mannheim.th.chess.ui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.mannheim.th.chess.App;
+import de.mannheim.th.chess.controller.ButtonFileLoaderListener;
 import de.mannheim.th.chess.domain.Game;
 
 public class ModeSelectionFrame extends JFrame {
+	
+	private static final Logger logger = LogManager.getLogger(App.class);
 
     private static final long serialVersionUID = 1L;
     private final JPanel contentPane;
     private final ArrayList<Game> spiele = new ArrayList<>();
+    private String fen;
 
     public ModeSelectionFrame() {
         // Frame-Eigenschaften
@@ -76,6 +89,19 @@ public class ModeSelectionFrame extends JFrame {
         jb2.setAlignmentX(Component.CENTER_ALIGNMENT);
         jb2.setMaximumSize(new Dimension(30, 30));
         contentPane.add(jb2);
+      
+        contentPane.add(Box.createVerticalStrut(15));
+
+		JButton btnNewButton_1 = new JButton("Vergangenes Spiel laden");
+		
+		btnNewButton_1.setBackground(Color.LIGHT_GRAY);
+		btnNewButton_1.setForeground(Color.BLACK);
+		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnNewButton_1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnNewButton_1.addActionListener(new ButtonFileLoaderListener(this));
+
+		contentPane.add(btnNewButton_1);
+        
         contentPane.add(Box.createVerticalStrut(25));
 
         // Spiel starten Button
@@ -94,7 +120,7 @@ public class ModeSelectionFrame extends JFrame {
                 boolean rotieren = jb1.isSelected();
                 boolean zuruecknahme = jb2.isSelected();
 
-                Game game = new Game(modus, rotieren, zuruecknahme);
+                Game game = new Game(modus, rotieren, zuruecknahme, fen);
                
                 spiele.add(game);
 
@@ -103,5 +129,9 @@ public class ModeSelectionFrame extends JFrame {
         });
 
         setVisible(true);
+    }
+    
+    public void setFen(String fen) {
+    	this.fen = fen;
     }
 }

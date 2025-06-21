@@ -7,7 +7,7 @@ import de.mannheim.th.chess.domain.Game;
  */
 public class GameWindow{
 	
-	private Game gamelogic = new Game();
+	//private Game gamelogic = new Game();
 	
 	public GameWindow() {
 		

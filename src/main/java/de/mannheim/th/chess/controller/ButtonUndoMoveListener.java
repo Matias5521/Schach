@@ -45,6 +45,7 @@ public class ButtonUndoMoveListener implements ActionListener {
 				sf.getUndo2().setEnabled(false);
 				game.undo();
 				sf.getClock().switchClock();
+				sf.deleteLastAusgabe();
 				sf.erstelleBrett();
 			}
 		} else if (source == sf.getUndo2()) { // Spieler 1 drückt seinen Button
@@ -59,6 +60,7 @@ public class ButtonUndoMoveListener implements ActionListener {
 				sf.getUndo().setEnabled(false);
 				game.undo();
 				sf.getClock().switchClock();
+				sf.deleteLastAusgabe();
 				sf.erstelleBrett();
 			}
 		}

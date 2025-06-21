@@ -9,6 +9,8 @@ import com.github.bhlangonijr.chesslib.move.Move;
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
 import de.mannheim.th.chess.utl.Clock;
+import de.mannheim.th.chess.controller.ButtonAufgebenListener;
+import de.mannheim.th.chess.controller.ButtonFileSaverListener;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
@@ -48,6 +50,7 @@ public class SpielFrame extends JFrame {
 	private HashMap<JButton, String> belegungen = new HashMap<>();
 	private JPanel panelLinks, panelRechts, contentPane;
 	private JButton undo, undo2;
+	private JTextArea ausgabe;
 	private Game game;
 	private Clock clock;
 
@@ -110,7 +113,6 @@ public class SpielFrame extends JFrame {
 		splitPane.setEnabled(false);
 
 		contentPane.add(splitPane, BorderLayout.CENTER);
-
 		
 		setVisible(true);
 	}
@@ -235,7 +237,7 @@ public class SpielFrame extends JFrame {
 			JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
 			s.setEnabled(true);
 			s.setBackground(new Color(165, 42, 42));
-			s.addActionListener(new ButtonToNormalListener(this)); // cancel action
+			s.addActionListener(new ButtonToNormalListener(this)); 
 
 			selectables = game.getLegalMoveableSquares(selectedSquare);
 
@@ -341,12 +343,7 @@ public class SpielFrame extends JFrame {
 		aufgebenUndo.add(aufgeben);
 
 		// Button-Listener
-		aufgeben.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
+		aufgeben.addActionListener(new ButtonAufgebenListener());
 
 		aufgebenUndo.add(Box.createHorizontalStrut(10));
 
@@ -358,12 +355,7 @@ public class SpielFrame extends JFrame {
 		aufgebenUndo.add(safe);
 
 		// Button-Listener
-		safe.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
+		safe.addActionListener(new ButtonFileSaverListener(this, this.game));
 
 		playerTwo.add(aufgebenUndo);
 
@@ -378,13 +370,30 @@ public class SpielFrame extends JFrame {
 		statistik.setBackground(new Color(90, 90, 90));
 		statistik.setLayout(new BoxLayout(statistik, BoxLayout.Y_AXIS));
 
-		JTextArea ausgabe = new JTextArea();
+		ausgabe = new JTextArea();
 		ausgabe.setEditable(false);
 		ausgabe.setBackground(new Color(75, 75, 75));
 		ausgabe.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		ausgabe.setFont(new Font("Calibri", Font.BOLD, 26));
+		ausgabe.setForeground(Color.BLACK);
+		ausgabe.setText("\n    Bisherige Züge:\n");
 
 		statistik.add(ausgabe);
 		return statistik;
+	}
+	
+	public void appendText(String text) {
+	    ausgabe.append("        "+ text + "\n");
+	}
+	
+	public void deleteLastAusgabe() {
+		String[] ausgabe = this.ausgabe.getText().split("\n");
+		String textNeu = "";
+		for(int i=0;i<ausgabe.length-1;i++) {
+			textNeu += ausgabe[i]+"\n";
+		}
+		this.ausgabe.setText("");
+		appendText(textNeu);
 	}
 
 	private JPanel getUiPlayerOne() {
@@ -423,12 +432,7 @@ public class SpielFrame extends JFrame {
 		aufgebenUndo.add(aufgeben);
 
 		// Button-Listener
-		aufgeben.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
+		aufgeben.addActionListener(new ButtonAufgebenListener());
 
 		aufgebenUndo.add(Box.createHorizontalStrut(10));
 
@@ -440,12 +444,7 @@ public class SpielFrame extends JFrame {
 		aufgebenUndo.add(safe);
 
 		// Button-Listener
-		safe.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
+		safe.addActionListener(new ButtonFileSaverListener(this, this.game));
 
 		playerOne.add(aufgebenUndo);
 
@@ -464,25 +463,6 @@ public class SpielFrame extends JFrame {
 		playerOne.add(pl2);
 
 		return playerOne;
-	}
-	
-	public void undoMove() {
-		
-		switch(this.undoMove) {
-		
-		case white:
-			
-			break;
-			
-		case black:
-			break;
-			
-		case nobody:
-			break;
-		
-		default:
-			break;
-		}
 	}
 	
 	public void setBoardMode(BoardMode bm) {

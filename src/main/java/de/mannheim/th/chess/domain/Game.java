@@ -3,6 +3,9 @@ package de.mannheim.th.chess.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
@@ -10,6 +13,7 @@ import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
+import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.ui.SpielFrame;
 import de.mannheim.th.chess.utl.Clock;
 
@@ -18,6 +22,8 @@ import de.mannheim.th.chess.utl.Clock;
  * Steuerung davon.
  */
 public class Game {
+	
+	private static final Logger logger = LogManager.getLogger(App.class);
 
 	private Board board;
 	private Clock clock;
@@ -30,21 +36,22 @@ public class Game {
 	/**
 	 * Conststructs a new standard GameBoard.
 	 */
-	public Game(String modus, boolean rotieren, boolean zuruecknahme) {
+	public Game(String modus, boolean rotieren, boolean zuruecknahme, String fen) {
 		this.modus = modus;
 		this.rotieren = rotieren;
 		this.zuruecknahme = zuruecknahme;
 		
-		
 		this.board = new Board();
+		
+		if(fen == null) fen = board.getFen();
+		
+		this.board.loadFromFen(fen);
 
 		this.movelist = new MoveList();
 		
 		clock = new Clock(modus);
 		
 		sp = new SpielFrame(this);
-
-		
 
 	}
 
@@ -185,5 +192,14 @@ public class Game {
 			return true;
 		}
 		return false;
+	}
+	
+	public String getFen() {
+		return this.board.getFen();
+	}
+	
+	public Move getLastMove() {
+		logger.info(this.movelist.getLast().toString());
+		return this.movelist.getLast();
 	}
 }

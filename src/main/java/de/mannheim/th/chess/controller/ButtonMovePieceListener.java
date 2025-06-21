@@ -24,8 +24,6 @@ public class ButtonMovePieceListener implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     this.game.playMove(this.mv);
-    sf.getUndo().setText("Zug zurücknehmen");
-    sf.getUndo2().setText("Zug zurücknehmen");
 	
     if (this.game.isDraw()) {
       this.game.stopClock();
@@ -39,5 +37,11 @@ public class ButtonMovePieceListener implements ActionListener {
     this.sf.setBoardMode(BoardMode.normal);
     this.sf.setCursor(null);
     this.sf.erstelleBrett();
+    
+    if (game.getLastMove() != null) {
+        char[] z = game.getLastMove().toString().toCharArray();
+        String moveString = String.valueOf(z[0]) + String.valueOf(z[1]) + " -> " + String.valueOf(z[2]) + String.valueOf(z[3]);
+        sf.appendText(moveString);
+    }
   }
 }
