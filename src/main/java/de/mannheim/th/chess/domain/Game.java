@@ -202,4 +202,8 @@ public class Game {
 		logger.info(this.movelist.getLast().toString());
 		return this.movelist.getLast();
 	}
+	
+	public MoveList getMoveList() {
+		return this.movelist;
+	}
 }

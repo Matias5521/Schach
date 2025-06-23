@@ -1,6 +1,5 @@
 package de.mannheim.th.chess.controller;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -39,16 +38,8 @@ public class ButtonMovePieceListener implements ActionListener {
     this.sf.erstelleBrett();
     
     if (game.getLastMove() != null) {
-    	char[] z = game.getLastMove().toString().toCharArray();
-    	String moveString = "";
-    	if(game.getActivePlayer() == 1) {
-    		moveString = "        " + String.valueOf(z[0]) + String.valueOf(z[1]) + " -> " + String.valueOf(z[2]) + String.valueOf(z[3]);
-    	}else if(game.getActivePlayer() == 2){
-    		moveString = String.valueOf(z[0]) + String.valueOf(z[1]) + " -> " + String.valueOf(z[2]) + String.valueOf(z[3]+"        ");
-    	}
         
-        
-        sf.appendText(moveString);
+        sf.aktualisiereAusgabe();
     }
   }
 }

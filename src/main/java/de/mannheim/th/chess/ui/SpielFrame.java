@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
+import com.github.bhlangonijr.chesslib.move.MoveList;
 
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
@@ -56,15 +57,10 @@ public class SpielFrame extends JFrame {
 	private Clock clock;
 
 	private BoardMode mode;
-	private Zuruecknahme undoMove;
 	private Square selectedSquare;
 
 	public enum BoardMode {
 		normal, pieceSelected, finished
-	}
-	
-	public enum Zuruecknahme {
-		white, black, nobody
 	}
 
 	/**
@@ -114,7 +110,7 @@ public class SpielFrame extends JFrame {
 		splitPane.setEnabled(false);
 
 		contentPane.add(splitPane, BorderLayout.CENTER);
-		
+
 		setVisible(true);
 	}
 
@@ -176,7 +172,7 @@ public class SpielFrame extends JFrame {
 	 * with new blank ones.
 	 */
 	private void clearButtons() {
-		
+
 		buttons.clear();
 		panelLinks.removeAll();
 
@@ -221,7 +217,7 @@ public class SpielFrame extends JFrame {
 
 		switch (this.mode) {
 		case BoardMode.normal:
-		
+
 			selectables = game.getAllLegalMoveableSquares();
 
 			for (Square square : selectables) {
@@ -238,7 +234,7 @@ public class SpielFrame extends JFrame {
 			JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
 			s.setEnabled(true);
 			s.setBackground(new Color(165, 42, 42));
-			s.addActionListener(new ButtonToNormalListener(this)); 
+			s.addActionListener(new ButtonToNormalListener(this));
 
 			selectables = game.getLegalMoveableSquares(selectedSquare);
 
@@ -331,8 +327,7 @@ public class SpielFrame extends JFrame {
 
 			// Button-Listener
 			undo.addActionListener(new ButtonUndoMoveListener(this, this.game));
-		}		
-		
+		}
 
 		aufgebenUndo.add(Box.createHorizontalStrut(10));
 
@@ -375,30 +370,49 @@ public class SpielFrame extends JFrame {
 		ausgabe.setEditable(false);
 		ausgabe.setBackground(new Color(75, 75, 75));
 		ausgabe.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		ausgabe.setFont(new Font("Calibri", Font.BOLD, 26));
+		ausgabe.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		ausgabe.setForeground(Color.BLACK);
-		ausgabe.setText("\n    Bisherige Züge:\n");
-		
+		ausgabe.setText("\n   Bisherige Züge:\n");
+
 		JScrollPane scrollPane = new JScrollPane(ausgabe);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		statistik.add(scrollPane);
-		
+
 		return statistik;
 	}
-	
-	public void appendText(String text) {
-	    ausgabe.append("        "+ text + "\n");
+
+	public void aktualisiereAusgabe() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("\n    Bisherige Züge:\n");
+	    sb.append("    +------------------+------------------+\n");
+	    sb.append("    | Player 1:        | Player 2:        |\n");
+	    sb.append("    +------------------+------------------+\n");
+
+	    MoveList l = game.getMoveList();
+	    for (int i = 0; i < l.size(); i += 2) {
+	        String p1 = l.get(i).toString();
+	        String p2 = (i + 1 < l.size()) ? l.get(i + 1).toString() : "";
+	        sb.append(String.format("    | %-17s| %-17s|\n", p1, p2));
+	        sb.append("    +------------------+------------------+\n");
+	    }
+
+	    ausgabe.setText(sb.toString());
 	}
-	
+
+
 	public void deleteLastAusgabe() {
-		String[] ausgabe = this.ausgabe.getText().split("\n");
-		String textNeu = "";
-		for(int i=0;i<ausgabe.length-1;i++) {
-			textNeu += ausgabe[i]+"\n";
-		}
-		this.ausgabe.setText("");
-		appendText(textNeu);
+	    String[] zeilen = ausgabe.getText().split("\n");
+
+	    //es müssen immer mind 5 Zeilen existieren, dass also 1 Zug löschbar ist
+	    if (zeilen.length <= 5) return; 
+
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < zeilen.length - 2; i++) {
+	        sb.append(zeilen[i]).append("\n");
+	    }
+
+	    ausgabe.setText(sb.toString());
 	}
 
 	private JPanel getUiPlayerOne() {
@@ -424,7 +438,7 @@ public class SpielFrame extends JFrame {
 
 			// Button-Listener
 			undo2.addActionListener(new ButtonUndoMoveListener(this, this.game));
-				
+
 		}
 
 		aufgebenUndo.add(Box.createHorizontalStrut(10));
@@ -469,7 +483,7 @@ public class SpielFrame extends JFrame {
 
 		return playerOne;
 	}
-	
+
 	public void setBoardMode(BoardMode bm) {
 		this.mode = bm;
 	}
@@ -481,23 +495,19 @@ public class SpielFrame extends JFrame {
 	public HashMap<JButton, String> getBelegung() {
 		return this.belegungen;
 	}
-	
-	public void setZuruecknahme(Zuruecknahme z) {
-		this.undoMove = z;
-	}
-	
+
 	public JButton getUndo() {
 		return undo;
 	}
-	
+
 	public JButton getUndo2() {
 		return undo2;
 	}
-	
+
 	public BoardMode getMode() {
 		return mode;
 	}
-	
+
 	public Clock getClock() {
 		return clock;
 	}
