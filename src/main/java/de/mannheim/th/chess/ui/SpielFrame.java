@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -377,8 +378,12 @@ public class SpielFrame extends JFrame {
 		ausgabe.setFont(new Font("Calibri", Font.BOLD, 26));
 		ausgabe.setForeground(Color.BLACK);
 		ausgabe.setText("\n    Bisherige Züge:\n");
-
-		statistik.add(ausgabe);
+		
+		JScrollPane scrollPane = new JScrollPane(ausgabe);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		statistik.add(scrollPane);
+		
 		return statistik;
 	}
 	
