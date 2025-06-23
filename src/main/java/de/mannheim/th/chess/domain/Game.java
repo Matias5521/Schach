@@ -177,9 +177,13 @@ public class Game {
 		return this.board.legalMoves().stream().filter(move -> move.getFrom() == square).map(move -> move.getTo())
 				.collect(Collectors.toList());
 	}
+	
+	public String getUnicodeFromMove(Move move) {
+	    return board.getPiece(move.getTo()).getFanSymbol().toUpperCase(); 
+	}
 
 	public String toFEN() {
-		board.toString();
+		//board.toString();
 		return board.getFen();
 	}
 
@@ -213,5 +217,10 @@ public class Game {
 	
 	public MoveList getMoveList() {
 		return this.movelist;
+	}
+
+	public Board getBoard() {
+		// TODO Auto-generated method stub
+		return this.board;
 	}
 }

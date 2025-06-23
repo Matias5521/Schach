@@ -30,18 +30,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 public class SpielFrame extends JFrame {
 
@@ -385,16 +383,10 @@ public class SpielFrame extends JFrame {
 	public void aktualisiereAusgabe() {
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("\n    Bisherige Züge:\n");
-	    sb.append("    +------------------+------------------+\n");
-	    sb.append("    | Player 1:        | Player 2:        |\n");
-	    sb.append("    +------------------+------------------+\n");
 
 	    MoveList l = game.getMoveList();
-	    for (int i = 0; i < l.size(); i += 2) {
-	        String p1 = l.get(i).toString();
-	        String p2 = (i + 1 < l.size()) ? l.get(i + 1).toString() : "";
-	        sb.append(String.format("    | %-17s| %-17s|\n", p1, p2));
-	        sb.append("    +------------------+------------------+\n");
+	    for (Move m: l) {
+	    	sb.append("     "+game.getUnicodeFromMove(m)+": "+m.toString()+"\n");
 	    }
 
 	    ausgabe.setText(sb.toString());
@@ -405,10 +397,10 @@ public class SpielFrame extends JFrame {
 	    String[] zeilen = ausgabe.getText().split("\n");
 
 	    //es müssen immer mind 5 Zeilen existieren, dass also 1 Zug löschbar ist
-	    if (zeilen.length <= 5) return; 
+	    if (zeilen.length <= 2) return; 
 
 	    StringBuilder sb = new StringBuilder();
-	    for (int i = 0; i < zeilen.length - 2; i++) {
+	    for (int i = 0; i < zeilen.length - 1; i++) {
 	        sb.append(zeilen[i]).append("\n");
 	    }
 
