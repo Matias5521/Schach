@@ -32,6 +32,14 @@ public class Game {
 	private boolean rotieren, zuruecknahme;
 
 	private MoveList movelist;
+	
+	public Game() {
+		
+		this.board = new Board();
+		this.movelist = new MoveList();
+		clock = new Clock("blitz");
+	    clock.start();
+	}
 
 	/**
 	 * Conststructs a new standard GameBoard.
