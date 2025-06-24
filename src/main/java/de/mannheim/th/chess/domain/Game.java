@@ -133,7 +133,7 @@ public class Game {
   }
 
   /**
-   * Copys the current move list to the savestate
+   * Copies the current move list to the savestate
    */
   public void quicksave() {
     // TODO: save the current clocktime
@@ -148,14 +148,17 @@ public class Game {
    *        from the savestate
    */
   public void quickload() {
-    this.board = new Board();
-    this.board.loadFromFen(startPosFen);
+    if (this.savestate != null) {
 
-    for (Move move : savestate) {
-      this.playMove(move);
+      this.board = new Board();
+      this.board.loadFromFen(startPosFen);
+
+      for (Move move : savestate) {
+        this.playMove(move);
+      }
+
+      logger.info("Quickloaded");
     }
-
-    logger.info("Quickloaded");
   }
 
   /**
