@@ -1,2 +1,5 @@
 JFileChoser in UI: (mit GPT)
 Prompt: "Wie kann ich in swing in java Files aus einem Explorer auswählen und speichern?".
+
+JButton mit Text und Icon gleichzeitig belegen:
+Pompt: "Kann ich einem button einen text und ein bild gleichzeigtig geben?".
