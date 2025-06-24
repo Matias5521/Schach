@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -145,26 +146,34 @@ public class SpielFrame extends JFrame {
 				int leerfelder = Character.getNumericValue(fen[j]);
 				for (int k = 0; k < leerfelder; k++) {
 					int idx;
-					if(game.isRotieren()) idx = wechsel ? mirrowedGrid(i) : i;
-					else idx = i;
+					if (game.isRotieren())
+						idx = wechsel ? mirrowedGrid(i) : i;
+					else
+						idx = i;
 					belegungen.put(buttons.get(idx), "n-n");
 					i++;
 				}
 				continue;
 			} else if (fen[j] >= 65 && fen[j] <= 90) { // Großbuchstabe = weiß
 				int idx;
-				if(game.isRotieren()) idx = wechsel ? mirrowedGrid(i) : i;
-				else idx = i;
+				if (game.isRotieren())
+					idx = wechsel ? mirrowedGrid(i) : i;
+				else
+					idx = i;
 				belegungen.put(buttons.get(idx), "w-" + fen[j]);
 			} else if (fen[j] >= 97 && fen[j] <= 122) { // Kleinbuchstabe = schwarz
 				int idx;
-				if(game.isRotieren()) idx = wechsel ? mirrowedGrid(i) : i;
-				else idx = i;
+				if (game.isRotieren())
+					idx = wechsel ? mirrowedGrid(i) : i;
+				else
+					idx = i;
 				belegungen.put(buttons.get(idx), "b-" + fen[j]);
 			}
 			int idx;
-			if(game.isRotieren()) idx = wechsel ? mirrowedGrid(i) : i;
-			else idx = i;
+			if (game.isRotieren())
+				idx = wechsel ? mirrowedGrid(i) : i;
+			else
+				idx = i;
 			buttons.get(idx).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
 			buttons.get(idx).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
 			i++;
@@ -187,7 +196,7 @@ public class SpielFrame extends JFrame {
 
 			// style
 			b.setFocusPainted(false);
-			b.setFont(new Font("Arial", Font.PLAIN, 30));
+			b.setFont(new Font("Arial", Font.PLAIN, 20));
 			b.setForeground(Color.WHITE);
 			b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 			b.setName(i + "");
@@ -201,79 +210,120 @@ public class SpielFrame extends JFrame {
 	 * Sets the default background color for the buttons in the grid.
 	 */
 	private void setDefaultBackground() {
+		int counter = 8;
 		for (int i = 0; i < 64; i++) {
 			JButton b = buttons.get(i);
 			if ((i / 8 + i % 8) % 2 == 0) {
 				// logger.info("Helles Feld erstellt." + i);
 				b.setBackground(new Color(90, 90, 90));
+				
+				
 			} else {
 				// logger.info("Dunkles Feld erstellt." + i);
 				b.setBackground(new Color(65, 65, 65));
 			}
+			
+			if(i % 8 == 0) {
+				b.setHorizontalAlignment(SwingConstants.CENTER);
+				b.setVerticalAlignment(SwingConstants.CENTER);
+
+				b.setHorizontalTextPosition(SwingConstants.RIGHT);   // Text rechts vom Icon
+				b.setVerticalTextPosition(SwingConstants.BOTTOM);
+				
+				b.setIconTextGap(5);
+				
+				b.setText(String.valueOf(counter)+b.getText());
+				counter--;
+			}
 		}
+		
+		
+		
+		char buchstabe = 'a';
+		for(int j=0;j<8;j++) {
+			JButton button = buttons.get(mirrowedGrid(j));
+			
+			button.setHorizontalAlignment(SwingConstants.CENTER);
+			button.setVerticalAlignment(SwingConstants.CENTER);
+
+			button.setHorizontalTextPosition(SwingConstants.RIGHT);   // Text rechts vom Icon
+			button.setVerticalTextPosition(SwingConstants.BOTTOM);
+			
+			button.setIconTextGap(5);
+			
+			button.setText(String.valueOf(buchstabe));
+			buchstabe++;
+		}
+		
 	}
 
 	/*
 	 * Switches the button actions depending on the boardmode
 	 */
 	public void setButtonsActions() {
-	    List<Square> selectables;
+		List<Square> selectables;
 
-	    switch (this.mode) {
-	    case normal:
-	        selectables = game.getAllLegalMoveableSquares();
-	        for (Square square : selectables) {
-	        	int idx;
-	        	
-	        	if(game.isRotieren()) idx = wechsel ? square.ordinal() : mirrowedGrid(square.ordinal());
-	        	else idx = this.mirrowedGrid(square.ordinal());
-	        	
-	            JButton b = buttons.get(idx);
-	            b.setEnabled(true);
-	            b.addActionListener(new ButtonSelectPieceListener(this, square));
-	        }
-	        break;
+		switch (this.mode) {
+		case normal:
+			selectables = game.getAllLegalMoveableSquares();
+			for (Square square : selectables) {
+				int idx;
 
-	    case pieceSelected:
-	        int idxSelected;
-	        
-	        if(game.isRotieren())idxSelected = wechsel ? selectedSquare.ordinal() : mirrowedGrid(selectedSquare.ordinal());
-	        else idxSelected = mirrowedGrid(selectedSquare.ordinal());
-	        
-	        JButton s = buttons.get(idxSelected);
-	        s.setEnabled(true);
-	        s.setBackground(new Color(165, 42, 42));
-	        s.addActionListener(new ButtonToNormalListener(this));
+				if (game.isRotieren())
+					idx = wechsel ? square.ordinal() : mirrowedGrid(square.ordinal());
+				else
+					idx = this.mirrowedGrid(square.ordinal());
 
-	        selectables = game.getLegalMoveableSquares(selectedSquare);
-	        for (Square square : selectables) {
-	            int idx;
-	            if(game.isRotieren()) idx = wechsel ? square.ordinal() : mirrowedGrid(square.ordinal());
-	            else idx = mirrowedGrid(square.ordinal());
-	            final Move move = new Move(selectedSquare, square);
-	            JButton b = buttons.get(idx);
-	            b.setEnabled(true);
-	            b.setBackground(new Color(230, 100, 100));
-	            b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
-	        }
-	        break;
+				JButton b = buttons.get(idx);
+				b.setEnabled(true);
+				b.addActionListener(new ButtonSelectPieceListener(this, square));
+			}
+			break;
 
-	    case finished:
-	        clearButtons();
-	        break;
+		case pieceSelected:
+			int idxSelected;
 
-	    case gameEnd:
-	        panelLinks.setEnabled(false);
-	        panelRechts.setEnabled(false);
-	        break;
+			if (game.isRotieren())
+				idxSelected = wechsel ? selectedSquare.ordinal() : mirrowedGrid(selectedSquare.ordinal());
+			else
+				idxSelected = mirrowedGrid(selectedSquare.ordinal());
 
-	    default:
-	        break;
-	    }
+			JButton s = buttons.get(idxSelected);
+			s.setEnabled(true);
+			s.setBackground(new Color(165, 42, 42));
+			s.addActionListener(new ButtonToNormalListener(this));
 
-	    for (JButton b : buttons) {
-	        panelLinks.add(b);
-	    }
+			selectables = game.getLegalMoveableSquares(selectedSquare);
+			for (Square square : selectables) {
+				int idx;
+				if (game.isRotieren())
+					idx = wechsel ? square.ordinal() : mirrowedGrid(square.ordinal());
+				else
+					idx = mirrowedGrid(square.ordinal());
+				final Move move = new Move(selectedSquare, square);
+				JButton b = buttons.get(idx);
+				b.setEnabled(true);
+				b.setBackground(new Color(230, 100, 100));
+				b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
+			}
+			break;
+
+		case finished:
+			clearButtons();
+			break;
+
+		case gameEnd:
+			panelLinks.setEnabled(false);
+			panelRechts.setEnabled(false);
+			break;
+
+		default:
+			break;
+		}
+
+		for (JButton b : buttons) {
+			panelLinks.add(b);
+		}
 	}
 
 	public void showWin(int player) {
