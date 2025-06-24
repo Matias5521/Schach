@@ -254,6 +254,7 @@ public class SpielFrame extends JFrame {
 			
 			//alle Eingabemöglichkeiten deaktivieren
 			panelLinks.setEnabled(false);
+			panelRechts.setEnabled(false);
 			
 			
 			break;
@@ -265,11 +266,6 @@ public class SpielFrame extends JFrame {
 		for (JButton b : buttons) {
 			panelLinks.add(b);
 		}
-	}
-
-	public void showDraw() {
-		
-	
 	}
 
 	public void showWin(int player) {
