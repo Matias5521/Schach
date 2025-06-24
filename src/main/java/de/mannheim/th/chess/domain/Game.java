@@ -13,7 +13,6 @@ import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
-import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.ui.SpielFrame;
