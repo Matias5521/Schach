@@ -34,6 +34,7 @@ public class Game {
   private boolean rotieren, zuruecknahme;
 
   private MoveList movelist;
+  private int viewPointer;
 
   public Game() {
 
@@ -272,11 +273,23 @@ public class Game {
     return board.getFen();
   }
 
-//  public Square getSelectedSquare() {
-//    return this.getSelectedSquare();
-//  }
+  // public Square getSelectedSquare() {
+  // return this.getSelectedSquare();
+  // }
 
   public String getUnicodeFromMove(Move move) {
     return board.getPiece(move.getTo()).getFanSymbol().toUpperCase();
+  }
+
+  public void setViewPointer(int i) {
+    this.viewPointer = i;
+  }
+
+  public int getViewPointer() {
+    return this.viewPointer;
+  }
+
+  public void loadView() {
+    // TODO: add functionality
   }
 }
