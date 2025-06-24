@@ -279,4 +279,9 @@ public class Game {
   public String getUnicodeFromMove(Move move) {
     return board.getPiece(move.getTo()).getFanSymbol().toUpperCase();
   }
+  
+  public boolean isRotieren() {
+		return rotieren;
+	  }
+
 }

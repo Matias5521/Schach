@@ -86,6 +86,10 @@ public class SpielFrame extends JFrame {
 		panelLinks = new JPanel(new GridLayout(8, 8));
 
 		erstelleBrett();
+		
+		if(game.isRotieren()) {
+	
+		}
 
 		// Rechtes Panel für Steuerung oder zusätzliche Eingaben
 		panelRechts = new JPanel();
