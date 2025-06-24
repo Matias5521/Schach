@@ -52,4 +52,13 @@ public class GameTest {
     controllList = Arrays.asList(Square.H1, Square.A1);
     assertEquals(controllList, game.getAllLegalMoveableSquares());
   }
+  
+  @Test
+  void getUnicodeFromMoveTest() {
+	  
+	  Game g = new Game();
+	  Move m = new Move(Square.A2, Square.A4);
+	  g.getBoard().doMove(m);
+	  assertEquals("♙", g.getUnicodeFromMove(m));
+  }
 }

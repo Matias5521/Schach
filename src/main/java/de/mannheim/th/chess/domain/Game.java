@@ -3,6 +3,9 @@ package de.mannheim.th.chess.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.Rank;
@@ -12,6 +15,8 @@ import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
+import de.mannheim.th.chess.App;
+import de.mannheim.th.chess.ui.SpielFrame;
 import de.mannheim.th.chess.utl.Clock;
 
 /**
@@ -20,21 +25,44 @@ import de.mannheim.th.chess.utl.Clock;
  */
 public class Game {
 
+  private static final Logger logger = LogManager.getLogger(App.class);
+
   private Board board;
   private Clock clock;
+  private SpielFrame sp;
+  private String modus;
+  private boolean rotieren, zuruecknahme;
 
   private MoveList movelist;
+
+  public Game() {
+
+    this.board = new Board();
+    this.movelist = new MoveList();
+    clock = new Clock("blitz");
+    clock.start();
+  }
 
   /**
    * Conststructs a new standard GameBoard.
    */
-  public Game() {
+  public Game(String modus, boolean rotieren, boolean zuruecknahme, String fen) {
+    this.modus = modus;
+    this.rotieren = rotieren;
+    this.zuruecknahme = zuruecknahme;
+
     this.board = new Board();
+
+    if (fen == null)
+      fen = board.getFen();
+
+    this.board.loadFromFen(fen);
 
     this.movelist = new MoveList();
 
-    clock = new Clock("blitz");
-    clock.start();
+    clock = new Clock(modus);
+
+    sp = new SpielFrame(this);
 
   }
 
@@ -66,6 +94,7 @@ public class Game {
     this.board.loadFromFen(fen);
 
     this.movelist = new MoveList();
+    // this.sp = new SpielFrame();
 
     // this.clockPlayer1 = new Clock();
     // this.clockPlayer2 = new Clock();
@@ -80,6 +109,18 @@ public class Game {
     this.board.doMove(move);
     this.movelist.add(move);
     clock.pressClock();
+  }
+
+  /**
+   * Plays the move on the board and adds it to the movelist
+   *
+   * @param origin     The square from wich it moves from.
+   * @param desination The square where it will move to.
+   */
+
+  public void undo() {
+    this.board.undoMove();
+    this.movelist.removeLast();
   }
 
   /**
@@ -118,9 +159,7 @@ public class Game {
    * @return A list of legal moves that originate from the specified square.
    */
   public List<Move> getLegalMoves(Square square) {
-    return this.board.legalMoves().stream()
-        .filter(move -> move.getFrom() == square)
-        .collect(Collectors.toList());
+    return this.board.legalMoves().stream().filter(move -> move.getFrom() == square).collect(Collectors.toList());
 
   }
 
@@ -139,10 +178,7 @@ public class Game {
    * @return a List of Square objects representing all legal moveable squares.
    */
   public List<Square> getAllLegalMoveableSquares() {
-    return this.board.legalMoves().stream()
-        .map(move -> move.getFrom())
-        .distinct()
-        .collect(Collectors.toList());
+    return this.board.legalMoves().stream().map(move -> move.getFrom()).distinct().collect(Collectors.toList());
   }
 
   /**
@@ -194,9 +230,54 @@ public class Game {
     playMove(promotionMove);
   }
 
+  public void setModus(String modus) {
+    this.modus = modus;
+  }
+
+  public Clock getClock() {
+    return this.clock;
+  }
+
+  public boolean isZuruecknahme() {
+    return zuruecknahme;
+  }
+
+  public boolean movesNotNull() {
+    if (movelist.getLast() != null) {
+      return true;
+    }
+    return false;
+  }
+
+  public String getFen() {
+    return this.board.getFen();
+  }
+
+  public Move getLastMove() {
+    logger.info(this.movelist.getLast().toString());
+    return this.movelist.getLast();
+  }
+
+  public MoveList getMoveList() {
+    return this.movelist;
+  }
+
+  public Board getBoard() {
+    // TODO Auto-generated method stub
+    return this.board;
+  }
+
   public String toFEN() {
     board.toString();
     return board.getFen();
+  }
+
+  public Square getSelectedSquare() {
+    return this.getSelectedSquare();
+  }
+
+  public String getUnicodeFromMove(Move move) {
+    return board.getPiece(move.getTo()).getFanSymbol().toUpperCase();
   }
 
   public Square getSelectedSquare() {

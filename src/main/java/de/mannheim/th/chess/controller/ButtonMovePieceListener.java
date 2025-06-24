@@ -39,5 +39,10 @@ public class ButtonMovePieceListener implements ActionListener {
     this.sf.setBoardMode(BoardMode.normal);
     this.sf.setCursor(null);
     this.sf.erstelleBrett();
+    
+    if (game.getLastMove() != null) {
+        
+        sf.aktualisiereAusgabe();
+    }
   }
 }
