@@ -33,6 +33,8 @@ public class Game {
   private String modus;
   private boolean rotieren, zuruecknahme;
 
+  private MoveList savestate;
+
   private MoveList movelist;
 
   public Game() {
@@ -121,6 +123,20 @@ public class Game {
   public void undo() {
     this.board.undoMove();
     this.movelist.removeLast();
+  }
+
+  public void quicksave() {
+    logger.info("Quicksaved");
+    this.savestate = new MoveList(this.movelist);
+  }
+
+  public void quickload() {
+    logger.info("Quickloaded");
+
+    this.board = new Board();
+    for (Move move : savestate) {
+      this.playMove(move);
+    }
   }
 
   /**
@@ -272,9 +288,9 @@ public class Game {
     return board.getFen();
   }
 
-//  public Square getSelectedSquare() {
-//    return this.getSelectedSquare();
-//  }
+  // public Square getSelectedSquare() {
+  // return this.getSelectedSquare();
+  // }
 
   public String getUnicodeFromMove(Move move) {
     return board.getPiece(move.getTo()).getFanSymbol().toUpperCase();
