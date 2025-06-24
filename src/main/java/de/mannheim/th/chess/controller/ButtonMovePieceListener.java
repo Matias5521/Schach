@@ -27,16 +27,16 @@ public class ButtonMovePieceListener implements ActionListener {
     else
       this.game.playMove(this.mv);
 
+    this.game.setViewPointer(this.game.getMoveList().size() - 1);
+
     if (this.game.isDraw()) {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);
-      this.game.setViewPointer(this.game.getMoveList().size() - 1);
       this.sf.enableControlPanelButtons();
       this.sf.showDraw();
     } else if (this.game.isMate()) {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);
-      this.game.setViewPointer(this.game.getMoveList().size() - 1);
       this.sf.enableControlPanelButtons();
       this.sf.showWin(game.getActivePlayer());
     } else {

@@ -1,7 +1,6 @@
 package de.mannheim.th.chess.ui;
 
 import java.util.List;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -13,11 +12,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingWorker;
 
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
+import com.github.bhlangonijr.chesslib.pgn.PgnLoadListener;
 
 public class PGNLoaderFrame extends JFrame {
   private PgnHolder pgn;
@@ -26,11 +28,12 @@ public class PGNLoaderFrame extends JFrame {
   private DefaultListModel<String> gameListModel;
   private JPanel contentPane;
   private JList<String> gameList;
+  private JProgressBar progressBar;
 
   public PGNLoaderFrame(MainFrame mf) {
     setResizable(true);
     setAlwaysOnTop(true);
-    setTitle("Schach");
+    setTitle("PGNLoader");
     setBounds(100, 100, 500, 500);
 
     contentPane = new JPanel();
@@ -65,6 +68,11 @@ public class PGNLoaderFrame extends JFrame {
 
     contentPane.add(scrollPane);
 
+    progressBar = new JProgressBar(0, 100);
+    progressBar.setValue(0);
+    progressBar.setStringPainted(true);
+    contentPane.add(progressBar);
+
     JButton startGameButton = new JButton("Starte Spiel");
     startGameButton.addActionListener(e -> {
       int index = gameList.getSelectedIndex();
@@ -82,18 +90,57 @@ public class PGNLoaderFrame extends JFrame {
   private void loadFile() {
     if (this.selectedFile != null) {
       pgn = new PgnHolder(this.selectedFile.getAbsolutePath());
+
+      LoadPGNWorker loadPGNWorker = new LoadPGNWorker();
+      loadPGNWorker.addPropertyChangeListener(e -> {
+        System.out.println(e.getNewValue());
+      });
+
+      progressBar.setIndeterminate(true);
+
+      pgn.getListener().add(loadPGNWorker);
+      loadPGNWorker.execute();
+
+      gameList.revalidate();
+    }
+  }
+
+  private class LoadPGNWorker extends SwingWorker<Integer, Integer> implements PgnLoadListener {
+
+    @Override
+    protected Integer doInBackground() throws Exception {
       try {
         pgn.loadPgn();
         games = pgn.getGames();
-        int i = 0;
-        for (Game game : games) {
-          gameListModel.addElement(i++ + "");
+        int totalGames = games.size();
+        for (int i = 0; i < totalGames; i++) {
+          publish(i);
         }
-        gameList.revalidate();
       } catch (Exception e) {
         // TODO: handle exception
       }
+      return pgn.getSize();
+    }
 
+    @Override
+    protected void process(List<Integer> chunks) {
+      for (Integer index : chunks) {
+        gameListModel.addElement("Game: " + index);
+        setProgress(Math.min(90, index * 100 / games.size()));
+      }
+    }
+
+    @Override
+    protected void done() {
+      setProgress(100);
+      progressBar.setValue(100);
+      progressBar.setIndeterminate(false);
+    }
+
+    @Override
+    public void notifyProgress(int games) {
+      setProgress(Math.min(90, games));
+      progressBar.setValue(Math.min(90, games));
     }
   }
 

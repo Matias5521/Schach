@@ -114,7 +114,10 @@ public class MainFrame extends JFrame {
 
   public void startGame() {
     if (this.game != null) {
+      this.game.stopClock();
       SpielFrame sf = new SpielFrame(this.game);
+      sf.setMode(SpielFrame.BoardMode.finished);
+      sf.enableControlPanelButtons();
     }
   }
 

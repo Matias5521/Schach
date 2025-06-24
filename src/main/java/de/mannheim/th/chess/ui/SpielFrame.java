@@ -583,6 +583,10 @@ public class SpielFrame extends JFrame {
     return clock;
   }
 
+  public void setMode(BoardMode mode) {
+    this.mode = mode;
+  }
+
   public void enableControlPanelButtons() {
     for (Component c : this.controlPanel.getComponents()) {
       if (c instanceof JButton) {
