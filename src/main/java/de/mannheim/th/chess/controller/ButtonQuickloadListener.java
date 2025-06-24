@@ -20,5 +20,6 @@ public class ButtonQuickloadListener implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     this.game.quickload();
     this.sf.erstelleBrett();
+    this.sf.aktualisiereAusgabe();
   }
 }

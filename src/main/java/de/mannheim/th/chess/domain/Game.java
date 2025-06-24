@@ -151,6 +151,7 @@ public class Game {
     if (this.savestate != null) {
 
       this.board = new Board();
+      this.movelist.clear();
       this.board.loadFromFen(startPosFen);
 
       for (Move move : savestate) {
