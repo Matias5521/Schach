@@ -3,6 +3,7 @@ package de.mannheim.th.chess.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
@@ -24,6 +25,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -243,7 +245,32 @@ public class SpielFrame extends JFrame {
 				final Move move = new Move(selectedSquare, square);
 				b.setEnabled(true);
 				b.setBackground(new Color(230, 100, 100));
-				b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
+				for (ActionListener al : b.getActionListeners()) {
+				    b.removeActionListener(al);
+				}
+				b.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if(game.isPromotionMove(move)) {
+							game.doPromotionMove(showPromotion(), selectedSquare, square);
+							
+						} else {
+							game.playMove(move);
+						}
+						if (game.isDraw()) {
+							game.stopClock();
+							mode = BoardMode.finished;
+							showDraw();
+						} else if (game.isMate()) {
+							game.stopClock();
+							mode = BoardMode.finished;
+							showWin(game.getActivePlayer());
+						}
+						mode = BoardMode.normal;
+						setCursor(null);
+						erstelleBrett();
+					}
+				});
 			}
 
 			break;
@@ -287,6 +314,37 @@ public class SpielFrame extends JFrame {
 		frame.add(jl);
 		frame.setVisible(true);
 	}
+	
+	private int showPromotion() {
+	    final int[] result = {-1};
+
+	    
+	    JDialog dialog = new JDialog(this, "Wähle eine Figur", true);
+	    dialog.setLayout(new GridLayout(2, 2));
+	    dialog.setSize(300, 200);
+
+	    int[] pictures = {81, 82, 66, 78, 113, 114, 98, 110};
+	    
+
+	    for (int i = 0; i < 4; i++) {
+	        int index = (game.getActivePlayer() - 1) * 4 + i;
+	        JButton jb = new JButton();
+	        jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
+	        int selectedPiece = index;
+	        jb.addActionListener(e -> {
+	        	System.out.println("Test");
+	            result[0] = selectedPiece;
+	            dialog.dispose();
+	        });
+	        dialog.add(jb);
+	    }
+
+	    dialog.setLocationRelativeTo(null);
+	    dialog.setVisible(true);
+
+	    return result[0];
+	}
+	
 
 	private JPanel getUiPlayerTwo() {
 
