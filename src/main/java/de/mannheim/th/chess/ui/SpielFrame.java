@@ -14,6 +14,8 @@ import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonAufgebenListener;
 import de.mannheim.th.chess.controller.ButtonFileSaverListener;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
+import de.mannheim.th.chess.controller.ButtonQuickloadListener;
+import de.mannheim.th.chess.controller.ButtonQuicksaveListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
 import de.mannheim.th.chess.controller.ButtonUndoMoveListener;
@@ -335,21 +337,29 @@ public class SpielFrame extends JFrame {
     JButton viewBackButton = new JButton("<-");
     JButton viewForwardButton = new JButton("->");
     JButton viewLastButton = new JButton("->>");
+    JButton quicksave = new JButton("Quicksave");
+    JButton quickload = new JButton("Quickload");
 
     viewFirstButton.setEnabled(false);
     viewBackButton.setEnabled(false);
     viewForwardButton.setEnabled(false);
     viewLastButton.setEnabled(false);
+    quicksave.setEnabled(true);
+    quickload.setEnabled(true);
 
     viewFirstButton.addActionListener(new ButtonViewFirstListener(this.game, this));
     viewBackButton.addActionListener(new ButtonViewBackListener(this.game, this));
     viewForwardButton.addActionListener(new ButtonViewForwardListener(this.game, this));
     viewLastButton.addActionListener(new ButtonViewLastListener(this.game, this));
+    quicksave.addActionListener(new ButtonQuicksaveListener(this.game));
+    quickload.addActionListener(new ButtonQuickloadListener(this.game, this));
 
+    this.controlPanel.add(quicksave);
     this.controlPanel.add(viewFirstButton);
     this.controlPanel.add(viewBackButton);
     this.controlPanel.add(viewForwardButton);
     this.controlPanel.add(viewLastButton);
+    this.controlPanel.add(quickload);
 
     return controlPanel;
   }
