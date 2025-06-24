@@ -14,6 +14,8 @@ import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonAufgebenListener;
 import de.mannheim.th.chess.controller.ButtonFileSaverListener;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
+import de.mannheim.th.chess.controller.ButtonQuickloadListener;
+import de.mannheim.th.chess.controller.ButtonQuicksaveListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
 import de.mannheim.th.chess.controller.ButtonUndoMoveListener;
@@ -432,6 +434,17 @@ public class SpielFrame extends JFrame {
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
     statistik.add(scrollPane);
+
+    // TODO: Buttons should be somewhere else
+    JButton quicksave = new JButton();
+    quicksave.addActionListener(new ButtonQuicksaveListener(this.game));
+    quicksave.setText("Quicksave");
+    statistik.add(quicksave);
+
+    JButton quickload = new JButton();
+    quickload.addActionListener(new ButtonQuickloadListener(this.game, this));
+    quickload.setText("Quickload");
+    statistik.add(quickload);
 
     return statistik;
   }
