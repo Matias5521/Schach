@@ -404,6 +404,7 @@ public class SpielFrame extends JFrame {
 
     statistik.add(scrollPane);
 
+    // TODO: Buttons should be somewhere else
     JButton quicksave = new JButton();
     quicksave.addActionListener(new ButtonQuicksaveListener(this.game));
     quicksave.setText("Quicksave");

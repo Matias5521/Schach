@@ -33,21 +33,24 @@ public class Game {
   private String modus;
   private boolean rotieren, zuruecknahme;
 
-  private MoveList savestate;
-
   private MoveList movelist;
 
-  public Game() {
-
-    this.board = new Board();
-    this.movelist = new MoveList();
-    clock = new Clock("blitz");
-    clock.start();
-  }
+  private MoveList savestate;
+  private String startPosFen;
 
   /**
    * Conststructs a new standard GameBoard.
    */
+  public Game() {
+
+    this.board = new Board();
+    this.movelist = new MoveList();
+    this.startPosFen = this.board.getFen();
+
+    clock = new Clock("blitz");
+    clock.start();
+  }
+
   public Game(String modus, boolean rotieren, boolean zuruecknahme, String fen) {
     this.modus = modus;
     this.rotieren = rotieren;
@@ -60,6 +63,7 @@ public class Game {
 
     this.board.loadFromFen(fen);
 
+    this.startPosFen = this.board.getFen();
     this.movelist = new MoveList();
 
     clock = new Clock(modus);
@@ -75,6 +79,8 @@ public class Game {
    */
   public Game(MoveList movelist) {
     this.board = new Board();
+
+    this.startPosFen = this.board.getFen();
 
     this.movelist = movelist;
 
@@ -96,6 +102,7 @@ public class Game {
     this.board.loadFromFen(fen);
 
     this.movelist = new MoveList();
+    this.startPosFen = this.board.getFen();
     // this.sp = new SpielFrame();
 
     // this.clockPlayer1 = new Clock();
@@ -125,18 +132,30 @@ public class Game {
     this.movelist.removeLast();
   }
 
+  /**
+   * Copys the current move list to the savestate
+   */
   public void quicksave() {
-    logger.info("Quicksaved");
+    // TODO: save the current clocktime
     this.savestate = new MoveList(this.movelist);
+    logger.info("Quicksaved");
   }
 
+  /**
+   * Loads the save state
+   *
+   * @brief creates a new board with the startPosFen and then plays all the moves
+   *        from the savestate
+   */
   public void quickload() {
-    logger.info("Quickloaded");
-
     this.board = new Board();
+    this.board.loadFromFen(startPosFen);
+
     for (Move move : savestate) {
       this.playMove(move);
     }
+
+    logger.info("Quickloaded");
   }
 
   /**
