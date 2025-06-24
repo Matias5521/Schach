@@ -329,6 +329,10 @@ public class Game {
   }
 
   public void loadView() {
-    // TODO: add functionality
+    this.board = new Board();
+    this.board.loadFromFen(this.startPosFen);
+    for (int i = 0; i < this.viewPointer; i++) {
+      this.board.doMove(this.movelist.get(i));
+    }
   }
 }

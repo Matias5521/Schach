@@ -14,11 +14,13 @@ import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonAufgebenListener;
 import de.mannheim.th.chess.controller.ButtonFileSaverListener;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
-import de.mannheim.th.chess.controller.ButtonQuickloadListener;
-import de.mannheim.th.chess.controller.ButtonQuicksaveListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
 import de.mannheim.th.chess.controller.ButtonUndoMoveListener;
+import de.mannheim.th.chess.controller.controlPanel.ButtonViewBackListener;
+import de.mannheim.th.chess.controller.controlPanel.ButtonViewFirstListener;
+import de.mannheim.th.chess.controller.controlPanel.ButtonViewForwardListener;
+import de.mannheim.th.chess.controller.controlPanel.ButtonViewLastListener;
 
 import java.awt.Font;
 
@@ -61,8 +63,6 @@ public class SpielFrame extends JFrame {
 
   private BoardMode mode;
   private Square selectedSquare;
-
-  private int viewPointer;
 
   public enum BoardMode {
     normal, pieceSelected, finished
@@ -126,14 +126,11 @@ public class SpielFrame extends JFrame {
    */
   public void erstelleBrett() {
 
-    this.clearButtons();
-    this.setDefaultBackground();
+    this.setDefaultButtons();
     this.setButtonsActions();
+    this.applyBoardButtons();
 
     this.ladeBrett();
-
-    panelLinks.revalidate();
-    panelLinks.repaint();
 
   }
 
@@ -144,7 +141,7 @@ public class SpielFrame extends JFrame {
   /**
    * holt sich FEN-Zeichenkette und extrahiert daraus die Positionen der Figuren
    */
-  private void ladeBrett() {
+  public void ladeBrett() {
     // System.out.println(game.toFEN());
 
     char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
@@ -172,6 +169,10 @@ public class SpielFrame extends JFrame {
       i++;
 
     }
+
+    panelLinks.revalidate();
+    panelLinks.repaint();
+
   }
 
   /**
@@ -213,6 +214,11 @@ public class SpielFrame extends JFrame {
         b.setBackground(new Color(65, 65, 65));
       }
     }
+  }
+
+  public void setDefaultButtons() {
+    this.clearButtons();
+    this.setDefaultBackground();
   }
 
   /*
@@ -262,9 +268,6 @@ public class SpielFrame extends JFrame {
 
     }
 
-    for (JButton b : buttons) {
-      panelLinks.add(b);
-    }
   }
 
   public void showDraw() {
@@ -337,6 +340,11 @@ public class SpielFrame extends JFrame {
     viewBackButton.setEnabled(false);
     viewForwardButton.setEnabled(false);
     viewLastButton.setEnabled(false);
+
+    viewFirstButton.addActionListener(new ButtonViewFirstListener(this.game, this));
+    viewBackButton.addActionListener(new ButtonViewBackListener(this.game, this));
+    viewForwardButton.addActionListener(new ButtonViewForwardListener(this.game, this));
+    viewLastButton.addActionListener(new ButtonViewLastListener(this.game, this));
 
     this.controlPanel.add(viewFirstButton);
     this.controlPanel.add(viewBackButton);
@@ -434,17 +442,6 @@ public class SpielFrame extends JFrame {
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
     statistik.add(scrollPane);
-
-    // TODO: Buttons should be somewhere else
-    JButton quicksave = new JButton();
-    quicksave.addActionListener(new ButtonQuicksaveListener(this.game));
-    quicksave.setText("Quicksave");
-    statistik.add(quicksave);
-
-    JButton quickload = new JButton();
-    quickload.addActionListener(new ButtonQuickloadListener(this.game, this));
-    quickload.setText("Quickload");
-    statistik.add(quickload);
 
     return statistik;
   }
@@ -576,7 +573,7 @@ public class SpielFrame extends JFrame {
     return clock;
   }
 
-  private void enableControlPanelButtons() {
+  public void enableControlPanelButtons() {
     for (Component c : this.controlPanel.getComponents()) {
       if (c instanceof JButton) {
         c.setEnabled(!c.isEnabled());
@@ -584,12 +581,10 @@ public class SpielFrame extends JFrame {
     }
   }
 
-  public void setViewPointer(int i) {
-    this.viewPointer = i;
-  }
-
-  public int getViewPointer() {
-    return this.viewPointer;
+  public void applyBoardButtons() {
+    for (JButton b : buttons) {
+      panelLinks.add(b);
+    }
   }
 
 }
