@@ -227,7 +227,7 @@ public class SpielFrame extends JFrame {
 				b.setHorizontalAlignment(SwingConstants.CENTER);
 				b.setVerticalAlignment(SwingConstants.CENTER);
 
-				b.setHorizontalTextPosition(SwingConstants.RIGHT);   // Text rechts vom Icon
+				b.setHorizontalTextPosition(SwingConstants.LEFT);   // Text rechts vom Icon
 				b.setVerticalTextPosition(SwingConstants.BOTTOM);
 				
 				b.setIconTextGap(5);
