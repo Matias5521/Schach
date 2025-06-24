@@ -16,7 +16,6 @@ import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
 import de.mannheim.th.chess.App;
-import de.mannheim.th.chess.ui.SpielFrame;
 import de.mannheim.th.chess.utl.Clock;
 
 /**
@@ -29,7 +28,6 @@ public class Game {
 
   private Board board;
   private Clock clock;
-  private SpielFrame sp;
   private String modus;
   private boolean rotieren, zuruecknahme;
 
@@ -68,9 +66,6 @@ public class Game {
     this.movelist = new MoveList();
 
     clock = new Clock(modus);
-
-    sp = new SpielFrame(this);
-
   }
 
   /**
@@ -88,6 +83,8 @@ public class Game {
     for (Move move : movelist) {
       this.board.doMove(move);
     }
+
+    this.clock = new Clock("blitz");
 
     // this.clockPlayer1 = new Clock();
     // this.clockPlayer2 = new Clock();
