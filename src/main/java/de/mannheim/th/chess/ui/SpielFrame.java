@@ -271,34 +271,6 @@ public class SpielFrame extends JFrame {
     // frame.setVisible(true);
   }
 
-  public int showPromotion() {
-    final int[] result = { -1 };
-
-    JDialog dialog = new JDialog(this, "Wähle eine Figur", true);
-    dialog.setLayout(new GridLayout(2, 2));
-    dialog.setSize(300, 200);
-
-    int[] pictures = { 81, 82, 66, 78, 113, 114, 98, 110 };
-
-    for (int i = 0; i < 4; i++) {
-      int index = (game.getActivePlayer() - 1) * 4 + i;
-      JButton jb = new JButton();
-      jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
-      int selectedPiece = index;
-      jb.addActionListener(e -> {
-        System.out.println("Test");
-        result[0] = selectedPiece;
-        dialog.dispose();
-      });
-      dialog.add(jb);
-    }
-
-    dialog.setLocationRelativeTo(null);
-    dialog.setVisible(true);
-
-    return result[0];
-  }
-
   public void showWin(int player) {
     JFrame frame = new JFrame("Result");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -272,15 +272,11 @@ public class Game {
     return board.getFen();
   }
 
-  public Square getSelectedSquare() {
-    return this.getSelectedSquare();
-  }
+//  public Square getSelectedSquare() {
+//    return this.getSelectedSquare();
+//  }
 
   public String getUnicodeFromMove(Move move) {
     return board.getPiece(move.getTo()).getFanSymbol().toUpperCase();
-  }
-
-  public Square getSelectedSquare() {
-    return this.getSelectedSquare();
   }
 }
