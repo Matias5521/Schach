@@ -38,22 +38,22 @@ public class ButtonMovePieceListener implements ActionListener {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);
       this.sf.enableControlPanelButtons();
-      this.sf.showResult("Spieler "+game.getActivePlayer()+" hat gewonnen!");
+      this.sf.showResult("Spieler " + game.getActivePlayer() + " hat gewonnen!");
     } else {
       this.sf.setBoardMode(BoardMode.normal);
+      if (game.getLastMove() != null) {
+        sf.aktualisiereAusgabe();
+      }
     }
 
     this.sf.setCursor(null);
-    
-    //hier rotieren markieren
-    
-    if(game.isRotieren())sf.setWechsel(!sf.isWechsel());
-    
+
+    // hier rotieren markieren
+
+    if (game.isRotieren())
+      sf.setWechsel(!sf.isWechsel());
+
     this.sf.erstelleBrett();
 
-    if (game.getLastMove() != null) {
-
-      sf.aktualisiereAusgabe();
-    }
   }
 }
