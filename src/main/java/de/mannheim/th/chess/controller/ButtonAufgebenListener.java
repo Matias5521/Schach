@@ -46,6 +46,7 @@ public class ButtonAufgebenListener extends JFrame implements ActionListener {
 		}
 		
 		this.sf.setBoardMode(BoardMode.finished);
+		this.sf.enableControlPanelButtons();
 
 		sf.setButtonsActions();
 		

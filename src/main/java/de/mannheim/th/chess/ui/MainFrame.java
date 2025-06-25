@@ -87,6 +87,10 @@ public class MainFrame extends JFrame {
     contentPane.add(Box.createVerticalStrut(15));
 
     JButton pgnLoaderButton = new JButton("Lade aus PGN Datei");
+    pgnLoaderButton.setBackground(Color.LIGHT_GRAY);
+    pgnLoaderButton.setForeground(Color.BLACK);
+    pgnLoaderButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+    pgnLoaderButton.setAlignmentX(CENTER_ALIGNMENT);
     pgnLoaderButton.addActionListener(e -> openPgnSelectFrame());
     contentPane.add(pgnLoaderButton);
 
@@ -116,7 +120,7 @@ public class MainFrame extends JFrame {
    */
   public void startGame() {
     if (this.game != null) {
-      this.game.stopClock();
+      //this.game.stopClock();
       new SpielFrame(this.game);
     }
   }
