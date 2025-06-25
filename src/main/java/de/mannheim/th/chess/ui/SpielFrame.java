@@ -1,13 +1,12 @@
 package de.mannheim.th.chess.ui;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 
-import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
 import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonAufgebenListener;
@@ -51,7 +50,7 @@ import java.awt.GridLayout;
 
 public class SpielFrame extends JFrame {
 
-  private static final Logger logger = LogManager.getLogger(App.class);
+  // private static final Logger logger = LogManager.getLogger(App.class);
 
   private static final long serialVersionUID = 1L;
   private ArrayList<JButton> buttons = new ArrayList<>();
@@ -82,7 +81,7 @@ public class SpielFrame extends JFrame {
 
     mode = BoardMode.normal;
 
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setBounds(100, 100, 1920, 1080);
     setTitle("Schach");
     setAlwaysOnTop(true);
@@ -137,8 +136,12 @@ public class SpielFrame extends JFrame {
 
   }
 
-  private int mirrowedGrid(int i) {
-    return 63 - (((i / 8) * 8) + (7 - i % 8));
+  /**
+   * Sets the to default buttons
+   */
+  public void setDefaultButtons() {
+    this.clearButtons();
+    this.setDefaultBackground();
   }
 
   /**
@@ -184,87 +187,6 @@ public class SpielFrame extends JFrame {
       buttons.get(idx).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
       i++;
     }
-  }
-
-  /**
-   * Clears the existing buttons from the button list, panellinks and fills them
-   * with new blank ones.
-   */
-  private void clearButtons() {
-
-    buttons.clear();
-    panelLinks.removeAll();
-
-    for (int i = 0; i < 64; i++) {
-      JButton b = new JButton();
-
-      b.setEnabled(false);
-
-      // style
-      b.setFocusPainted(false);
-      b.setFont(new Font("Arial", Font.PLAIN, 30));
-      b.setForeground(Color.WHITE);
-      b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-      b.setName(i + "");
-
-      buttons.add(b);
-    }
-  }
-
-  /**
-   * Sets the default background color for the buttons in the grid.
-   */
-  private void setDefaultBackground() {
-    int counter = 8;
-    for (int i = 0; i < 64; i++) {
-      JButton b = buttons.get(i);
-      if ((i / 8 + i % 8) % 2 == 0) {
-        // logger.info("Helles Feld erstellt." + i);
-        b.setBackground(new Color(90, 90, 90));
-
-      } else {
-        // logger.info("Dunkles Feld erstellt." + i);
-        b.setBackground(new Color(65, 65, 65));
-      }
-
-      if (i % 8 == 0) {
-        b.setHorizontalAlignment(SwingConstants.CENTER);
-        b.setVerticalAlignment(SwingConstants.CENTER);
-
-        b.setHorizontalTextPosition(SwingConstants.LEFT); // Text rechts vom Icon
-        b.setVerticalTextPosition(SwingConstants.BOTTOM);
-
-        b.setIconTextGap(5);
-
-        b.setText(String.valueOf(counter) + b.getText());
-        counter--;
-      }
-    }
-
-    char buchstabe = 'a';
-    for (int j = 0; j < 8; j++) {
-      JButton button = buttons.get(mirrowedGrid(j));
-
-      button.setHorizontalAlignment(SwingConstants.CENTER);
-      button.setVerticalAlignment(SwingConstants.CENTER);
-
-      button.setHorizontalTextPosition(SwingConstants.RIGHT); // Text rechts vom Icon
-      button.setVerticalTextPosition(SwingConstants.BOTTOM);
-
-      button.setIconTextGap(5);
-
-      button.setText(String.valueOf(buchstabe));
-      buchstabe++;
-    }
-
-  }
-
-  /**
-   * Sets the to default buttons
-   */
-  public void setDefaultButtons() {
-    this.clearButtons();
-    this.setDefaultBackground();
   }
 
   /*
@@ -330,9 +252,29 @@ public class SpielFrame extends JFrame {
     }
   }
 
+  /**
+   * Inverts the Enabled property of the controlpanelButtons
+   */
+  public void enableControlPanelButtons() {
+    for (Component c : this.controlPanel.getComponents()) {
+      if (c instanceof JButton) {
+        c.setEnabled(!c.isEnabled());
+      }
+    }
+  }
+
+  /**
+   * Adds the buttons to the boardpanel
+   */
+  public void applyBoardButtons() {
+    for (JButton b : buttons) {
+      panelLinks.add(b);
+    }
+  }
+
   public void showWin(int player) {
     JFrame frame = new JFrame("Result");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
     frame.setSize(300, 150);
     frame.setLayout(null);
 
@@ -377,6 +319,66 @@ public class SpielFrame extends JFrame {
     dialog.setVisible(true);
 
     return result[0];
+  }
+
+  public HashMap<JButton, String> getBelegung() {
+    return this.belegungen;
+  }
+
+  public boolean isWechsel() {
+    return wechsel;
+  }
+
+  public JButton getUndo() {
+    return undo;
+  }
+
+  public JButton getUndo2() {
+    return undo2;
+  }
+
+  public BoardMode getMode() {
+    return mode;
+  }
+
+  public Clock getClock() {
+    return clock;
+  }
+
+  public JButton getAufgeben() {
+    return aufgeben;
+  }
+
+  public JButton getAufgeben2() {
+    return aufgeben2;
+  }
+
+  public void setMode(BoardMode mode) {
+    this.mode = mode;
+  }
+
+  public void setBoardMode(BoardMode bm) {
+    this.mode = bm;
+  }
+
+  public void setSelectedSquare(Square sq) {
+    this.selectedSquare = sq;
+  }
+
+  public void setAufgeben(JButton aufgeben) {
+    this.aufgeben = aufgeben;
+  }
+
+  public void setAufgeben2(JButton aufgeben2) {
+    this.aufgeben2 = aufgeben2;
+  }
+
+  public void setWechsel(boolean wechsel) {
+    this.wechsel = wechsel;
+  }
+
+  private int mirrowedGrid(int i) {
+    return 63 - (((i / 8) * 8) + (7 - i % 8));
   }
 
   /**
@@ -440,7 +442,7 @@ public class SpielFrame extends JFrame {
     pl2.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
     pl2.setFont(new Font("Calibri", Font.BOLD, 35));
     pl2.setForeground(Color.BLACK);
-    pl2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    pl2.setAlignmentX(CENTER_ALIGNMENT);
     playerTwo.add(pl2);
 
     playerTwo.add(Box.createVerticalStrut(10));
@@ -460,7 +462,7 @@ public class SpielFrame extends JFrame {
       undo.setBackground(Color.LIGHT_GRAY);
       undo.setForeground(Color.BLACK);
       undo.setFont(new Font("Tahoma", Font.BOLD, 16));
-      undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+      undo.setAlignmentX(CENTER_ALIGNMENT);
       aufgebenUndo.add(undo);
 
       // Button-Listener
@@ -473,7 +475,7 @@ public class SpielFrame extends JFrame {
     aufgeben2.setBackground(Color.LIGHT_GRAY);
     aufgeben2.setForeground(Color.BLACK);
     aufgeben2.setFont(new Font("Tahoma", Font.BOLD, 16));
-    aufgeben2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    aufgeben2.setAlignmentX(CENTER_ALIGNMENT);
 
     aufgeben2.addActionListener(new ButtonAufgebenListener(this, this.game));
     aufgebenUndo.add(aufgeben2);
@@ -484,7 +486,7 @@ public class SpielFrame extends JFrame {
     safe.setBackground(Color.LIGHT_GRAY);
     safe.setForeground(Color.BLACK);
     safe.setFont(new Font("Tahoma", Font.BOLD, 16));
-    safe.setAlignmentX(Component.CENTER_ALIGNMENT);
+    safe.setAlignmentX(CENTER_ALIGNMENT);
     aufgebenUndo.add(safe);
 
     // Button-Listener
@@ -567,7 +569,7 @@ public class SpielFrame extends JFrame {
       undo2.setBackground(Color.LIGHT_GRAY);
       undo2.setForeground(Color.BLACK);
       undo2.setFont(new Font("Tahoma", Font.BOLD, 16));
-      undo2.setAlignmentX(Component.CENTER_ALIGNMENT);
+      undo2.setAlignmentX(CENTER_ALIGNMENT);
       aufgebenUndo.add(undo2);
 
       // Button-Listener
@@ -581,7 +583,7 @@ public class SpielFrame extends JFrame {
     aufgeben.setBackground(Color.LIGHT_GRAY);
     aufgeben.setForeground(Color.BLACK);
     aufgeben.setFont(new Font("Tahoma", Font.BOLD, 16));
-    aufgeben.setAlignmentX(Component.CENTER_ALIGNMENT);
+    aufgeben.setAlignmentX(CENTER_ALIGNMENT);
     aufgeben.addActionListener(new ButtonAufgebenListener(this, this.game));
 
     aufgebenUndo.add(aufgeben);
@@ -592,7 +594,7 @@ public class SpielFrame extends JFrame {
     safe.setBackground(Color.LIGHT_GRAY);
     safe.setForeground(Color.BLACK);
     safe.setFont(new Font("Tahoma", Font.BOLD, 16));
-    safe.setAlignmentX(Component.CENTER_ALIGNMENT);
+    safe.setAlignmentX(CENTER_ALIGNMENT);
     aufgebenUndo.add(safe);
 
     // Button-Listener
@@ -611,86 +613,83 @@ public class SpielFrame extends JFrame {
     pl2.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
     pl2.setFont(new Font("Calibri", Font.BOLD, 35));
     pl2.setForeground(Color.BLACK);
-    pl2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    pl2.setAlignmentX(CENTER_ALIGNMENT);
     playerOne.add(pl2);
 
     return playerOne;
   }
 
-  public void setBoardMode(BoardMode bm) {
-    this.mode = bm;
-  }
-
-  public void setSelectedSquare(Square sq) {
-    this.selectedSquare = sq;
-  }
-
-  public HashMap<JButton, String> getBelegung() {
-    return this.belegungen;
-  }
-
-  public JButton getUndo() {
-    return undo;
-  }
-
-  public JButton getUndo2() {
-    return undo2;
-  }
-
-  public BoardMode getMode() {
-    return mode;
-  }
-
-  public Clock getClock() {
-    return clock;
-  }
-
-  public void setMode(BoardMode mode) {
-    this.mode = mode;
-  }
-
   /**
-   * Inverts the Enabled property of the controlpanelButtons
+   * Sets the default background color for the buttons in the grid.
    */
-  public void enableControlPanelButtons() {
-    for (Component c : this.controlPanel.getComponents()) {
-      if (c instanceof JButton) {
-        c.setEnabled(!c.isEnabled());
+  private void setDefaultBackground() {
+    int counter = 8;
+    for (int i = 0; i < 64; i++) {
+      JButton b = buttons.get(i);
+      if ((i / 8 + i % 8) % 2 == 0) {
+        // logger.info("Helles Feld erstellt." + i);
+        b.setBackground(new Color(90, 90, 90));
+
+      } else {
+        // logger.info("Dunkles Feld erstellt." + i);
+        b.setBackground(new Color(65, 65, 65));
+      }
+
+      if (i % 8 == 0) {
+        b.setHorizontalAlignment(SwingConstants.CENTER);
+        b.setVerticalAlignment(SwingConstants.CENTER);
+
+        b.setHorizontalTextPosition(SwingConstants.LEFT); // Text rechts vom Icon
+        b.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        b.setIconTextGap(5);
+
+        b.setText(String.valueOf(counter) + b.getText());
+        counter--;
       }
     }
+
+    char buchstabe = 'a';
+    for (int j = 0; j < 8; j++) {
+      JButton button = buttons.get(mirrowedGrid(j));
+
+      button.setHorizontalAlignment(SwingConstants.CENTER);
+      button.setVerticalAlignment(SwingConstants.CENTER);
+
+      button.setHorizontalTextPosition(SwingConstants.RIGHT); // Text rechts vom Icon
+      button.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+      button.setIconTextGap(5);
+
+      button.setText(String.valueOf(buchstabe));
+      buchstabe++;
+    }
+
   }
 
   /**
-   * Adds the buttons to the boardpanel
+   * Clears the existing buttons from the button list, panellinks and fills them
+   * with new blank ones.
    */
-  public void applyBoardButtons() {
-    for (JButton b : buttons) {
-      panelLinks.add(b);
+  private void clearButtons() {
+
+    buttons.clear();
+    panelLinks.removeAll();
+
+    for (int i = 0; i < 64; i++) {
+      JButton b = new JButton();
+
+      b.setEnabled(false);
+
+      // style
+      b.setFocusPainted(false);
+      b.setFont(new Font("Arial", Font.PLAIN, 30));
+      b.setForeground(Color.WHITE);
+      b.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+      b.setName(i + "");
+
+      buttons.add(b);
     }
-  }
-
-  public JButton getAufgeben() {
-    return aufgeben;
-  }
-
-  public void setAufgeben(JButton aufgeben) {
-    this.aufgeben = aufgeben;
-  }
-
-  public JButton getAufgeben2() {
-    return aufgeben2;
-  }
-
-  public void setAufgeben2(JButton aufgeben2) {
-    this.aufgeben2 = aufgeben2;
-  }
-
-  public void setWechsel(boolean wechsel) {
-    this.wechsel = wechsel;
-  }
-
-  public boolean isWechsel() {
-    return wechsel;
   }
 
 }

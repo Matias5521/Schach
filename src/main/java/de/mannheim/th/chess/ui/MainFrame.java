@@ -4,10 +4,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
-import de.mannheim.th.chess.App;
+// import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
 
 import javax.swing.JLabel;
@@ -19,13 +19,12 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Color;
 
 public class MainFrame extends JFrame {
 
-  private static final Logger logger = LogManager.getLogger(App.class);
+  // private static final Logger logger = LogManager.getLogger(App.class);
 
   private static final long serialVersionUID = 1L;
   private JPanel contentPane;
@@ -40,7 +39,7 @@ public class MainFrame extends JFrame {
     setResizable(true);
     setAlwaysOnTop(true);
     setTitle("Schach");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
     setBounds(100, 100, 500, 500);
 
     contentPane = new JPanel();
@@ -57,14 +56,14 @@ public class MainFrame extends JFrame {
     JLabel lblNewLabel = new JLabel("Schach");
     lblNewLabel.setForeground(Color.BLACK);
     lblNewLabel.setFont(new Font("Serif", Font.BOLD, 60));
-    lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    lblNewLabel.setAlignmentX(CENTER_ALIGNMENT);
     contentPane.add(lblNewLabel);
 
     contentPane.add(Box.createVerticalStrut(10));
 
     JLabel lblNewLabel_1 = new JLabel("by Dominik, Marius und Matias");
     lblNewLabel_1.setFont(new Font("Calibri", Font.ITALIC, 24));
-    lblNewLabel_1.setAlignmentX(Component.CENTER_ALIGNMENT);
+    lblNewLabel_1.setAlignmentX(CENTER_ALIGNMENT);
     contentPane.add(lblNewLabel_1);
 
     contentPane.add(Box.createVerticalStrut(75));
@@ -74,7 +73,7 @@ public class MainFrame extends JFrame {
     btnNewButton.setBackground(Color.LIGHT_GRAY);
     btnNewButton.setForeground(Color.BLACK);
     btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
-    btnNewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    btnNewButton.setAlignmentX(CENTER_ALIGNMENT);
     btnNewButton.addActionListener(new ActionListener() {
 
       @Override
@@ -98,7 +97,7 @@ public class MainFrame extends JFrame {
     btnNewButton_2.setBackground(Color.LIGHT_GRAY);
     btnNewButton_2.setForeground(Color.BLACK);
     btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 16));
-    btnNewButton_2.setAlignmentX(Component.CENTER_ALIGNMENT);
+    btnNewButton_2.setAlignmentX(CENTER_ALIGNMENT);
     btnNewButton_2.addActionListener(new ActionListener() {
 
       @Override
@@ -118,7 +117,7 @@ public class MainFrame extends JFrame {
   public void startGame() {
     if (this.game != null) {
       this.game.stopClock();
-      SpielFrame sf = new SpielFrame(this.game);
+      new SpielFrame(this.game);
     }
   }
 
