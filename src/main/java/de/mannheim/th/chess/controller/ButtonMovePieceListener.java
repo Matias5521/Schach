@@ -33,12 +33,12 @@ public class ButtonMovePieceListener implements ActionListener {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);
       this.sf.enableControlPanelButtons();
-      this.sf.showDraw();
+      this.sf.showResult("Unentschieden!");
     } else if (this.game.isMate()) {
       this.game.stopClock();
       this.sf.setBoardMode(BoardMode.finished);
       this.sf.enableControlPanelButtons();
-      this.sf.showWin(game.getActivePlayer());
+      this.sf.showResult("Spieler "+game.getActivePlayer()+" hat gewonnen!");
     } else {
       this.sf.setBoardMode(BoardMode.normal);
     }

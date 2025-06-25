@@ -3,7 +3,6 @@ package de.mannheim.th.chess.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
@@ -57,7 +56,7 @@ public class SpielFrame extends JFrame {
   private ArrayList<JButton> buttons = new ArrayList<>();
   private HashMap<JButton, String> belegungen = new HashMap<>();
   private JPanel panelLinks, panelRechts, contentPane, controlPanel;
-  private JButton undo, undo2;
+  private JButton undo, undo2, aufgeben, aufgeben2;
   private JTextArea ausgabe;
   private Game game;
   private Clock clock;
@@ -226,10 +225,10 @@ public class SpielFrame extends JFrame {
     this.setDefaultBackground();
   }
 
-  /*
-   * Switches the button actions depending on the boardmode
-   */
-  private void setButtonsActions() {
+	/*
+	 * Switches the button actions depending on the boardmode
+	 */
+	private void setButtonsActions() {
 
     List<Square> selectables;
 
@@ -273,20 +272,10 @@ public class SpielFrame extends JFrame {
 
     }
 
-  }
-
-  public void showDraw() {
-    JFrame frame = new JFrame("Result");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(300, 150);
-    frame.setLayout(null);
-
-    // JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
-    // jl.setBounds(50, 30, 200, 25);
-    // jl.setFont(new Font("Tahoma", Font.BOLD, 20));
-    // frame.add(jl);
-    // frame.setVisible(true);
-  }
+		for (JButton b : buttons) {
+			panelLinks.add(b);
+		}
+	}
 
   public void showWin(int player) {
     JFrame frame = new JFrame("Result");
@@ -294,12 +283,20 @@ public class SpielFrame extends JFrame {
     frame.setSize(300, 150);
     frame.setLayout(null);
 
-    JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
-    jl.setBounds(50, 30, 200, 25);
-    jl.setFont(new Font("Tahoma", Font.BOLD, 20));
-    frame.add(jl);
-    frame.setVisible(true);
-  }
+		JLabel jl = new JLabel(String.format("%d - %d", player / 2, player % 2));
+		jl.setBounds(50, 30, 200, 25);
+		jl.setFont(new Font("Tahoma", Font.BOLD, 20));
+		frame.add(jl);
+		frame.setVisible(true);
+	}
+	
+	public void showResult(String res) {
+		
+		ausgabe.setFont(new Font("Calibri", Font.BOLD, 40));
+		ausgabe.setForeground(new Color(178, 34, 34));
+		ausgabe.setText("   "+res);
+		
+	}
 
   public int showPromotion() {
     final int[] result = { -1 };
@@ -419,15 +416,14 @@ public class SpielFrame extends JFrame {
 
     aufgebenUndo.add(Box.createHorizontalStrut(10));
 
-    JButton aufgeben = new JButton("Aufgeben");
-    aufgeben.setBackground(Color.LIGHT_GRAY);
-    aufgeben.setForeground(Color.BLACK);
-    aufgeben.setFont(new Font("Tahoma", Font.BOLD, 16));
-    aufgeben.setAlignmentX(Component.CENTER_ALIGNMENT);
-    aufgebenUndo.add(aufgeben);
-
-    // Button-Listener
-    aufgeben.addActionListener(new ButtonAufgebenListener());
+		aufgeben2 = new JButton("Aufgeben");
+		aufgeben2.setBackground(Color.LIGHT_GRAY);
+		aufgeben2.setForeground(Color.BLACK);
+		aufgeben2.setFont(new Font("Tahoma", Font.BOLD, 16));
+		aufgeben2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		aufgeben2.addActionListener(new ButtonAufgebenListener(this, this.game));
+		aufgebenUndo.add(aufgeben2);
 
     aufgebenUndo.add(Box.createHorizontalStrut(10));
 
@@ -528,15 +524,14 @@ public class SpielFrame extends JFrame {
 
     aufgebenUndo.add(Box.createHorizontalStrut(10));
 
-    JButton aufgeben = new JButton("Aufgeben");
-    aufgeben.setBackground(Color.LIGHT_GRAY);
-    aufgeben.setForeground(Color.BLACK);
-    aufgeben.setFont(new Font("Tahoma", Font.BOLD, 16));
-    aufgeben.setAlignmentX(Component.CENTER_ALIGNMENT);
-    aufgebenUndo.add(aufgeben);
-
-    // Button-Listener
-    aufgeben.addActionListener(new ButtonAufgebenListener());
+		aufgeben = new JButton("Aufgeben");
+		aufgeben.setBackground(Color.LIGHT_GRAY);
+		aufgeben.setForeground(Color.BLACK);
+		aufgeben.setFont(new Font("Tahoma", Font.BOLD, 16));
+		aufgeben.setAlignmentX(Component.CENTER_ALIGNMENT);
+		aufgeben.addActionListener(new ButtonAufgebenListener(this, this.game));
+		
+		aufgebenUndo.add(aufgeben);		
 
     aufgebenUndo.add(Box.createHorizontalStrut(10));
 
@@ -620,5 +615,61 @@ public class SpielFrame extends JFrame {
       panelLinks.add(b);
     }
   }
+
+	public JButton getAufgeben() {
+		return aufgeben;
+	}
+
+	public void setAufgeben(JButton aufgeben) {
+		this.aufgeben = aufgeben;
+	}
+
+	public JButton getAufgeben2() {
+		return aufgeben2;
+	}
+
+	public void setAufgeben2(JButton aufgeben2) {
+		this.aufgeben2 = aufgeben2;
+	}
+
+  public void setMode(BoardMode mode) {
+    this.mode = mode;
+  }
+
+  /**
+   * Inverts the Enabled property of the controlpanelButtons
+   */
+  public void enableControlPanelButtons() {
+    for (Component c : this.controlPanel.getComponents()) {
+      if (c instanceof JButton) {
+        c.setEnabled(!c.isEnabled());
+      }
+    }
+  }
+
+  /**
+   * Adds the buttons to the boardpanel
+   */
+  public void applyBoardButtons() {
+    for (JButton b : buttons) {
+      panelLinks.add(b);
+    }
+  }
+
+	public JButton getAufgeben() {
+		return aufgeben;
+	}
+
+	public void setAufgeben(JButton aufgeben) {
+		this.aufgeben = aufgeben;
+	}
+
+	public JButton getAufgeben2() {
+		return aufgeben2;
+	}
+
+	public void setAufgeben2(JButton aufgeben2) {
+		this.aufgeben2 = aufgeben2;
+	}
 
 }
