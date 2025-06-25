@@ -13,7 +13,6 @@ import com.github.bhlangonijr.chesslib.Side;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
-import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 
 import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.utl.Clock;
@@ -335,4 +334,9 @@ public class Game {
       this.board.doMove(this.movelist.get(i));
     }
   }
+  
+  public boolean isRotieren() {
+		return rotieren;
+	  }
+
 }

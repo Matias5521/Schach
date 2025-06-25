@@ -44,6 +44,11 @@ public class ButtonMovePieceListener implements ActionListener {
     }
 
     this.sf.setCursor(null);
+    
+    //hier rotieren markieren
+    
+    if(game.isRotieren())sf.setWechsel(!sf.isWechsel());
+    
     this.sf.erstelleBrett();
 
     if (game.getLastMove() != null) {

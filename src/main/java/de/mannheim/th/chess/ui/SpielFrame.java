@@ -61,12 +61,13 @@ public class SpielFrame extends JFrame {
   private Game game;
   private Clock clock;
   private ArrayList<String> anzeigeMoves = new ArrayList<String>();
+  private boolean wechsel = false;
 
   private BoardMode mode;
   private Square selectedSquare;
 
   public enum BoardMode {
-    normal, pieceSelected, finished
+    normal, pieceSelected, finished, gameEnd
   }
 
   /**
@@ -143,37 +144,45 @@ public class SpielFrame extends JFrame {
    * holt sich FEN-Zeichenkette und extrahiert daraus die Positionen der Figuren
    */
   public void ladeBrett() {
-    // System.out.println(game.toFEN());
-
     char[] fen = game.toFEN().replaceAll("/", "").split(" ")[0].toCharArray();
     int i = 0;
     for (int j = 0; j < fen.length; j++) {
       if (Character.isDigit(fen[j])) {
         int leerfelder = Character.getNumericValue(fen[j]);
         for (int k = 0; k < leerfelder; k++) {
-          belegungen.put(buttons.get(i), "n-n");
-          // buttons.get(i).setEnabled(false); // erstmal deaktivieren, weil leere Felder
-          // nicht ckickbar sein sollten.
+          int idx;
+          if (game.isRotieren())
+            idx = wechsel ? mirrowedGrid(i) : i;
+          else
+            idx = i;
+          belegungen.put(buttons.get(idx), "n-n");
           i++;
         }
         continue;
-      } else if (fen[j] >= 65 && fen[j] <= 90) { // ein Großbuchstabe, also
-        belegungen.put(buttons.get(i), "w-" + fen[j]);
-      } else if (fen[j] >= 97 && fen[j] <= 122) { // ein Kleinbuchstabe, also
-        belegungen.put(buttons.get(i), "b-" + fen[j]);
-        // buttons.get(i).setEnabled(false); // erstmal deaktivieren, damit weiß
-        // beginnen kann
+      } else if (fen[j] >= 65 && fen[j] <= 90) { // Großbuchstabe = weiß
+        int idx;
+        if (game.isRotieren())
+          idx = wechsel ? mirrowedGrid(i) : i;
+        else
+          idx = i;
+        belegungen.put(buttons.get(idx), "w-" + fen[j]);
+      } else if (fen[j] >= 97 && fen[j] <= 122) { // Kleinbuchstabe = schwarz
+        int idx;
+        if (game.isRotieren())
+          idx = wechsel ? mirrowedGrid(i) : i;
+        else
+          idx = i;
+        belegungen.put(buttons.get(idx), "b-" + fen[j]);
       }
-      buttons.get(i).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
-      buttons.get(i).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
-
+      int idx;
+      if (game.isRotieren())
+        idx = wechsel ? mirrowedGrid(i) : i;
+      else
+        idx = i;
+      buttons.get(idx).setIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
+      buttons.get(idx).setDisabledIcon(new ImageIcon("src/main/resources/" + (int) fen[j] + ".png"));
       i++;
-
     }
-
-    panelLinks.revalidate();
-    panelLinks.repaint();
-
   }
 
   /**
@@ -233,47 +242,60 @@ public class SpielFrame extends JFrame {
     List<Square> selectables;
 
     switch (this.mode) {
-      case BoardMode.normal:
-
+      case normal:
         selectables = game.getAllLegalMoveableSquares();
-
         for (Square square : selectables) {
-          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+          int idx;
+
+          if (game.isRotieren())
+            idx = wechsel ? square.ordinal() : mirrowedGrid(square.ordinal());
+          else
+            idx = this.mirrowedGrid(square.ordinal());
+
+          JButton b = buttons.get(idx);
           b.setEnabled(true);
-          // b.setBackground(Color.green);
           b.addActionListener(new ButtonSelectPieceListener(this, square));
         }
-
         break;
 
-      case BoardMode.pieceSelected:
+      case pieceSelected:
+        int idxSelected;
 
-        JButton s = buttons.get(mirrowedGrid(selectedSquare.ordinal()));
+        if (game.isRotieren())
+          idxSelected = wechsel ? selectedSquare.ordinal() : mirrowedGrid(selectedSquare.ordinal());
+        else
+          idxSelected = mirrowedGrid(selectedSquare.ordinal());
+
+        JButton s = buttons.get(idxSelected);
         s.setEnabled(true);
         s.setBackground(new Color(165, 42, 42));
         s.addActionListener(new ButtonToNormalListener(this));
 
         selectables = game.getLegalMoveableSquares(selectedSquare);
-
         for (Square square : selectables) {
-          JButton b = buttons.get(mirrowedGrid(square.ordinal()));
+          int idx;
+          if (game.isRotieren())
+            idx = wechsel ? square.ordinal() : mirrowedGrid(square.ordinal());
+          else
+            idx = mirrowedGrid(square.ordinal());
           final Move move = new Move(selectedSquare, square);
+          JButton b = buttons.get(idx);
           b.setEnabled(true);
           b.setBackground(new Color(230, 100, 100));
           b.addActionListener(new ButtonMovePieceListener(this, this.game, move));
         }
         break;
+
       case finished:
-        // this.enableControlPanelButtons();
-        // this.viewPointer = this.game.getMoveList().size() - 1;
+        clearButtons();
         break;
+
+      case gameEnd:
+
+        break;
+
       default:
         break;
-
-    }
-
-    for (JButton b : buttons) {
-      panelLinks.add(b);
     }
   }
 
@@ -630,6 +652,14 @@ public class SpielFrame extends JFrame {
 
   public void setAufgeben2(JButton aufgeben2) {
     this.aufgeben2 = aufgeben2;
+  }
+
+  public void setWechsel(boolean wechsel) {
+    this.wechsel = wechsel;
+  }
+
+  public boolean isWechsel() {
+    return wechsel;
   }
 
 }
