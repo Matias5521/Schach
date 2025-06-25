@@ -27,7 +27,6 @@ public class Game {
 
   private Board board;
   private Clock clock;
-  private String modus;
   private boolean rotieren, zuruecknahme;
 
   private MoveList movelist;
@@ -50,7 +49,6 @@ public class Game {
   }
 
   public Game(String modus, boolean rotieren, boolean zuruecknahme, String fen) {
-    this.modus = modus;
     this.rotieren = rotieren;
     this.zuruecknahme = zuruecknahme;
 
@@ -96,10 +94,6 @@ public class Game {
 
     this.movelist = new MoveList();
     this.startPosFen = this.board.getFen();
-    // this.sp = new SpielFrame();
-
-    // this.clockPlayer1 = new Clock();
-    // this.clockPlayer2 = new Clock();
   }
 
   /**
@@ -169,6 +163,55 @@ public class Game {
 
   }
 
+  public void doPromotionMove(int piece, Square origin, Square destination) {
+    System.out.println(piece);
+    Piece promotedTo;
+    switch (piece) {
+      case 7:
+        promotedTo = Piece.BLACK_KNIGHT;
+        break;
+      case 4:
+        promotedTo = Piece.BLACK_QUEEN;
+        break;
+      case 5:
+        promotedTo = Piece.BLACK_ROOK;
+        break;
+      case 6:
+        promotedTo = Piece.BLACK_BISHOP;
+        break;
+      case 3:
+        promotedTo = Piece.WHITE_KNIGHT;
+        break;
+      case 0:
+        promotedTo = Piece.WHITE_QUEEN;
+        break;
+      case 1:
+        promotedTo = Piece.WHITE_ROOK;
+        break;
+      case 2:
+        promotedTo = Piece.WHITE_BISHOP;
+        break;
+      default:
+        promotedTo = Piece.WHITE_QUEEN;
+    }
+    Move promotionMove = new Move(origin, destination, promotedTo);
+    playMove(promotionMove);
+  }
+
+  /**
+   * Loads the current view
+   *
+   * @brief Creates a new gameboard from the start pos and playes moves until it
+   *        reaches the viewPointer
+   */
+  public void loadView() {
+    this.board = new Board();
+    this.board.loadFromFen(this.startPosFen);
+    for (int i = 0; i < this.viewPointer; i++) {
+      this.board.doMove(this.movelist.get(i));
+    }
+  }
+
   public boolean isMate() {
     return board.isMated();
   }
@@ -228,45 +271,6 @@ public class Game {
         .collect(Collectors.toList());
   }
 
-  public void doPromotionMove(int piece, Square origin, Square destination) {
-    System.out.println(piece);
-    Piece promotedTo;
-    switch (piece) {
-      case 7:
-        promotedTo = Piece.BLACK_KNIGHT;
-        break;
-      case 4:
-        promotedTo = Piece.BLACK_QUEEN;
-        break;
-      case 5:
-        promotedTo = Piece.BLACK_ROOK;
-        break;
-      case 6:
-        promotedTo = Piece.BLACK_BISHOP;
-        break;
-      case 3:
-        promotedTo = Piece.WHITE_KNIGHT;
-        break;
-      case 0:
-        promotedTo = Piece.WHITE_QUEEN;
-        break;
-      case 1:
-        promotedTo = Piece.WHITE_ROOK;
-        break;
-      case 2:
-        promotedTo = Piece.WHITE_BISHOP;
-        break;
-      default:
-        promotedTo = Piece.WHITE_QUEEN;
-    }
-    Move promotionMove = new Move(origin, destination, promotedTo);
-    playMove(promotionMove);
-  }
-
-  public void setModus(String modus) {
-    this.modus = modus;
-  }
-
   public Clock getClock() {
     return this.clock;
   }
@@ -296,7 +300,6 @@ public class Game {
   }
 
   public Board getBoard() {
-    // TODO Auto-generated method stub
     return this.board;
   }
 
@@ -304,10 +307,6 @@ public class Game {
     board.toString();
     return board.getFen();
   }
-
-  // public Square getSelectedSquare() {
-  // return this.getSelectedSquare();
-  // }
 
   public String getUnicodeFromMove(Move move) {
     return board.getPiece(move.getTo()).getFanSymbol().toUpperCase();
@@ -321,22 +320,8 @@ public class Game {
     return this.viewPointer;
   }
 
-  /**
-   * Loads the current view
-   *
-   * @brief Creates a new gameboard from the start pos and playes moves until it
-   *        reaches the viewPointer
-   */
-  public void loadView() {
-    this.board = new Board();
-    this.board.loadFromFen(this.startPosFen);
-    for (int i = 0; i < this.viewPointer; i++) {
-      this.board.doMove(this.movelist.get(i));
-    }
-  }
-  
   public boolean isRotieren() {
-		return rotieren;
-	  }
+    return rotieren;
+  }
 
 }
