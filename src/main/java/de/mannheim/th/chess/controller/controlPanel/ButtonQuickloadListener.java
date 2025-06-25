@@ -1,5 +1,4 @@
-
-package de.mannheim.th.chess.controller;
+package de.mannheim.th.chess.controller.controlPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -77,7 +77,6 @@ public class Game {
     this.board = new Board();
 
     this.startPosFen = this.board.getFen();
-
     this.movelist = movelist;
 
     for (Move move : movelist) {
@@ -85,9 +84,6 @@ public class Game {
     }
 
     this.clock = new Clock("blitz");
-
-    // this.clockPlayer1 = new Clock();
-    // this.clockPlayer2 = new Clock();
   }
 
   /**
@@ -136,7 +132,8 @@ public class Game {
   public void quicksave() {
     // TODO: save the current clocktime
     this.savestate = new MoveList(this.movelist);
-    logger.info("Quicksaved");
+
+    logger.info("Quicksaved...");
   }
 
   /**
@@ -156,7 +153,7 @@ public class Game {
         this.playMove(move);
       }
 
-      logger.info("Quickloaded");
+      logger.info("Quickloaded...");
     }
   }
 
@@ -325,6 +322,12 @@ public class Game {
     return this.viewPointer;
   }
 
+  /**
+   * Loads the current view
+   *
+   * @brief Creates a new gameboard from the start pos and playes moves until it
+   *        reaches the viewPointer
+   */
   public void loadView() {
     this.board = new Board();
     this.board.loadFromFen(this.startPosFen);

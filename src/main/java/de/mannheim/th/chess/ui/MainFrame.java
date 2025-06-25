@@ -112,7 +112,20 @@ public class MainFrame extends JFrame {
     setVisible(true);
   }
 
+  /**
+   * Starts the spielframe and game in playmode
+   */
   public void startGame() {
+    if (this.game != null) {
+      this.game.stopClock();
+      SpielFrame sf = new SpielFrame(this.game);
+    }
+  }
+
+  /**
+   * Starts the spielframe and game in view mode
+   */
+  public void startView() {
     if (this.game != null) {
       this.game.stopClock();
       SpielFrame sf = new SpielFrame(this.game);
@@ -125,11 +138,17 @@ public class MainFrame extends JFrame {
     this.game = game;
   }
 
+  /**
+   * opens the selectmodeframe
+   */
   private void openSelectModeFrame() {
-    ModeSelectionFrame ms = new ModeSelectionFrame(this);
+    new ModeSelectionFrame(this);
   }
 
+  /**
+   * Opens the pgnselectorframe
+   */
   private void openPgnSelectFrame() {
-    PGNLoaderFrame pf = new PGNLoaderFrame(this);
+    new PGNLoaderFrame(this);
   }
 }

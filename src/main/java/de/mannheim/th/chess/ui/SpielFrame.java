@@ -14,8 +14,8 @@ import de.mannheim.th.chess.utl.Clock;
 import de.mannheim.th.chess.controller.ButtonAufgebenListener;
 import de.mannheim.th.chess.controller.ButtonFileSaverListener;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
-import de.mannheim.th.chess.controller.ButtonQuickloadListener;
-import de.mannheim.th.chess.controller.ButtonQuicksaveListener;
+import de.mannheim.th.chess.controller.controlPanel.ButtonQuickloadListener;
+import de.mannheim.th.chess.controller.controlPanel.ButtonQuicksaveListener;
 import de.mannheim.th.chess.controller.ButtonSelectPieceListener;
 import de.mannheim.th.chess.controller.ButtonToNormalListener;
 import de.mannheim.th.chess.controller.ButtonUndoMoveListener;
@@ -218,6 +218,9 @@ public class SpielFrame extends JFrame {
     }
   }
 
+  /**
+   * Sets the to default buttons
+   */
   public void setDefaultButtons() {
     this.clearButtons();
     this.setDefaultBackground();
@@ -326,6 +329,9 @@ public class SpielFrame extends JFrame {
     return result[0];
   }
 
+  /**
+   * Creates the controlPanel and its Buttons
+   */
   private JPanel createControlPanel() {
     this.controlPanel = new JPanel();
     this.controlPanel.setBackground(new Color(90, 90, 90));
@@ -333,32 +339,40 @@ public class SpielFrame extends JFrame {
 
     this.controlPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, controlPanel.getPreferredSize().height));
 
-    JButton viewFirstButton = new JButton("<<-");
-    JButton viewBackButton = new JButton("<-");
-    JButton viewForwardButton = new JButton("->");
-    JButton viewLastButton = new JButton("->>");
+    // ----- ViewQuicksaveButton -----
     JButton quicksave = new JButton("Quicksave");
-    JButton quickload = new JButton("Quickload");
-
-    viewFirstButton.setEnabled(false);
-    viewBackButton.setEnabled(false);
-    viewForwardButton.setEnabled(false);
-    viewLastButton.setEnabled(false);
     quicksave.setEnabled(true);
-    quickload.setEnabled(true);
-
-    viewFirstButton.addActionListener(new ButtonViewFirstListener(this.game, this));
-    viewBackButton.addActionListener(new ButtonViewBackListener(this.game, this));
-    viewForwardButton.addActionListener(new ButtonViewForwardListener(this.game, this));
-    viewLastButton.addActionListener(new ButtonViewLastListener(this.game, this));
     quicksave.addActionListener(new ButtonQuicksaveListener(this.game));
-    quickload.addActionListener(new ButtonQuickloadListener(this.game, this));
-
     this.controlPanel.add(quicksave);
+
+    // ----- ViewFirstButton -----
+    JButton viewFirstButton = new JButton("<<-");
+    viewFirstButton.setEnabled(false);
+    viewFirstButton.addActionListener(new ButtonViewFirstListener(this.game, this));
     this.controlPanel.add(viewFirstButton);
+
+    // ----- ViewBackButton -----
+    JButton viewBackButton = new JButton("<-");
+    viewBackButton.setEnabled(false);
+    viewBackButton.addActionListener(new ButtonViewBackListener(this.game, this));
     this.controlPanel.add(viewBackButton);
+
+    // ----- ViewForwardButton -----
+    JButton viewForwardButton = new JButton("->");
+    viewForwardButton.setEnabled(false);
+    viewForwardButton.addActionListener(new ButtonViewForwardListener(this.game, this));
     this.controlPanel.add(viewForwardButton);
+
+    // ----- ViewLastButton -----
+    JButton viewLastButton = new JButton("->>");
+    viewLastButton.setEnabled(false);
+    viewLastButton.addActionListener(new ButtonViewLastListener(this.game, this));
     this.controlPanel.add(viewLastButton);
+
+    // ----- ViewQuickloadButton -----
+    JButton quickload = new JButton("Quickload");
+    quickload.setEnabled(true);
+    quickload.addActionListener(new ButtonQuickloadListener(this.game, this));
     this.controlPanel.add(quickload);
 
     return controlPanel;
@@ -587,6 +601,9 @@ public class SpielFrame extends JFrame {
     this.mode = mode;
   }
 
+  /**
+   * Inverts the Enabled property of the controlpanelButtons
+   */
   public void enableControlPanelButtons() {
     for (Component c : this.controlPanel.getComponents()) {
       if (c instanceof JButton) {
@@ -595,6 +612,9 @@ public class SpielFrame extends JFrame {
     }
   }
 
+  /**
+   * Adds the buttons to the boardpanel
+   */
   public void applyBoardButtons() {
     for (JButton b : buttons) {
       panelLinks.add(b);

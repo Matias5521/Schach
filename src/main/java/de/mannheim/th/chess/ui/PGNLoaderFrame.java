@@ -17,11 +17,17 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.pgn.PgnHolder;
 import com.github.bhlangonijr.chesslib.pgn.PgnLoadListener;
 
 public class PGNLoaderFrame extends JFrame {
+
+  private static final Logger logger = LogManager.getLogger(PGNLoaderFrame.class);
+
   private PgnHolder pgn;
   private File selectedFile;
   private List<Game> games;
@@ -30,56 +36,61 @@ public class PGNLoaderFrame extends JFrame {
   private JList<String> gameList;
   private JProgressBar progressBar;
 
+  /**
+   * Opens the PNGLoaderFrame
+   */
   public PGNLoaderFrame(MainFrame mf) {
+
+    // ----- Style -----
     setResizable(true);
     setAlwaysOnTop(true);
     setTitle("PGNLoader");
     setBounds(100, 100, 500, 500);
 
+    // ----- contentPane -----
     contentPane = new JPanel();
-    setContentPane(contentPane);
-
     contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
+    setContentPane(contentPane);
+
+    // ----- FileSelector -----
     JButton fileSelectButton = new JButton("Select File");
-    fileSelectButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        JFileChooser fileChooser = new JFileChooser();
-        int returnValue = fileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-          selectedFile = fileChooser.getSelectedFile();
-        }
+    fileSelectButton.addActionListener(e -> {
+      JFileChooser fileChooser = new JFileChooser();
+      int returnValue = fileChooser.showOpenDialog(null);
+      if (returnValue == JFileChooser.APPROVE_OPTION) {
+        selectedFile = fileChooser.getSelectedFile();
       }
     });
     contentPane.add(fileSelectButton);
 
+    // ----- LoadButton -----
     JButton loadPgnButton = new JButton("Load file");
     loadPgnButton.addActionListener(e -> loadFile());
     contentPane.add(loadPgnButton);
 
+    // ----- SelectionList -----
     gameListModel = new DefaultListModel<>();
-
     gameList = new JList<>(gameListModel);
     gameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     gameList.setVisibleRowCount(5);
-
     JScrollPane scrollPane = new JScrollPane(gameList);
-
     contentPane.add(scrollPane);
 
+    // ----- ProgressBar -----
     progressBar = new JProgressBar(0, 100);
     progressBar.setValue(0);
     progressBar.setStringPainted(true);
     contentPane.add(progressBar);
 
+    // ----- StartButton -----
     JButton startGameButton = new JButton("Starte Spiel");
     startGameButton.addActionListener(e -> {
       int index = gameList.getSelectedIndex();
       de.mannheim.th.chess.domain.Game game = new de.mannheim.th.chess.domain.Game(games.get(index).getHalfMoves());
 
       mf.setGame(game);
-      mf.startGame();
+      mf.startView();
     });
     contentPane.add(startGameButton);
 
@@ -93,10 +104,8 @@ public class PGNLoaderFrame extends JFrame {
 
       LoadPGNWorker loadPGNWorker = new LoadPGNWorker();
       loadPGNWorker.addPropertyChangeListener(e -> {
-        System.out.println(e.getNewValue());
+        progressBar.setIndeterminate(true);
       });
-
-      progressBar.setIndeterminate(true);
 
       pgn.getListener().add(loadPGNWorker);
       loadPGNWorker.execute();
@@ -117,7 +126,7 @@ public class PGNLoaderFrame extends JFrame {
           publish(i);
         }
       } catch (Exception e) {
-        // TODO: handle exception
+        logger.info("Could not load pgn file!");
       }
       return pgn.getSize();
     }
