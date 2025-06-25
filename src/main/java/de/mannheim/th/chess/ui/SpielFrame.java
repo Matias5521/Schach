@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -210,23 +211,57 @@ public class SpielFrame extends JFrame {
     }
   }
 
-  /**
-   * Sets the default background color for the buttons in the grid.
-   */
-  private void setDefaultBackground() {
-    for (int i = 0; i < 64; i++) {
-      JButton b = buttons.get(i);
-      if ((i / 8 + i % 8) % 2 == 0) {
-        // logger.info("Helles Feld erstellt." + i);
-        b.setBackground(new Color(90, 90, 90));
-      } else {
-        // logger.info("Dunkles Feld erstellt." + i);
-        b.setBackground(new Color(65, 65, 65));
-      }
-    }
-  }
+	/**
+	 * Sets the default background color for the buttons in the grid.
+	 */
+	private void setDefaultBackground() {
+		int counter = 8;
+		for (int i = 0; i < 64; i++) {
+			JButton b = buttons.get(i);
+			if ((i / 8 + i % 8) % 2 == 0) {
+				// logger.info("Helles Feld erstellt." + i);
+				b.setBackground(new Color(90, 90, 90));
+				
+				
+			} else {
+				// logger.info("Dunkles Feld erstellt." + i);
+				b.setBackground(new Color(65, 65, 65));
+			}
+			
+			if(i % 8 == 0) {
+				b.setHorizontalAlignment(SwingConstants.CENTER);
+				b.setVerticalAlignment(SwingConstants.CENTER);
 
-  /**
+				b.setHorizontalTextPosition(SwingConstants.LEFT);   // Text rechts vom Icon
+				b.setVerticalTextPosition(SwingConstants.BOTTOM);
+				
+				b.setIconTextGap(5);
+				
+				b.setText(String.valueOf(counter)+b.getText());
+				counter--;
+			}
+		}
+		
+		
+		
+		char buchstabe = 'a';
+		for(int j=0;j<8;j++) {
+			JButton button = buttons.get(mirrowedGrid(j));
+			
+			button.setHorizontalAlignment(SwingConstants.CENTER);
+			button.setVerticalAlignment(SwingConstants.CENTER);
+
+			button.setHorizontalTextPosition(SwingConstants.RIGHT);   // Text rechts vom Icon
+			button.setVerticalTextPosition(SwingConstants.BOTTOM);
+			
+			button.setIconTextGap(5);
+			
+			button.setText(String.valueOf(buchstabe));
+			buchstabe++;
+		}
+		
+	}
+    /**
    * Sets the to default buttons
    */
   public void setDefaultButtons() {
