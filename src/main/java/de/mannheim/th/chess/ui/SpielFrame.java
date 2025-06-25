@@ -399,40 +399,40 @@ public class SpielFrame extends JFrame {
 		this.controlPanel.add(quicksave);
 
 		// ----- ViewFirstButton -----
-		JButton viewFirstButton = new JButton("<<-");
+		JButton viewFirstButton = new JButton("<<");
 		viewFirstButton.setBackground(Color.LIGHT_GRAY);
 		viewFirstButton.setForeground(Color.BLACK);
-		viewFirstButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		viewFirstButton.setFont(new Font("Calibri", Font.BOLD, 16));
 		viewFirstButton.setAlignmentX(CENTER_ALIGNMENT);
 		viewFirstButton.setEnabled(false);
 		viewFirstButton.addActionListener(new ButtonViewFirstListener(this.game, this));
 		this.controlPanel.add(viewFirstButton);
 
 		// ----- ViewBackButton -----
-		JButton viewBackButton = new JButton("<-");
+		JButton viewBackButton = new JButton("←");
 		viewBackButton.setBackground(Color.LIGHT_GRAY);
 		viewBackButton.setForeground(Color.BLACK);
-		viewBackButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		viewBackButton.setFont(new Font("Calibri", Font.BOLD, 16));
 		viewBackButton.setAlignmentX(CENTER_ALIGNMENT);
 		viewBackButton.setEnabled(false);
 		viewBackButton.addActionListener(new ButtonViewBackListener(this.game, this));
 		this.controlPanel.add(viewBackButton);
 
 		// ----- ViewForwardButton -----
-		JButton viewForwardButton = new JButton("->");
+		JButton viewForwardButton = new JButton("→");
 		viewForwardButton.setBackground(Color.LIGHT_GRAY);
 		viewForwardButton.setForeground(Color.BLACK);
-		viewForwardButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		viewForwardButton.setFont(new Font("Calibri", Font.BOLD, 16));
 		viewForwardButton.setAlignmentX(CENTER_ALIGNMENT);
 		viewForwardButton.setEnabled(false);
 		viewForwardButton.addActionListener(new ButtonViewForwardListener(this.game, this));
 		this.controlPanel.add(viewForwardButton);
 
 		// ----- ViewLastButton -----
-		JButton viewLastButton = new JButton("->>");
+		JButton viewLastButton = new JButton(">>");
 		viewLastButton.setBackground(Color.LIGHT_GRAY);
 		viewLastButton.setForeground(Color.BLACK);
-		viewLastButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		viewLastButton.setFont(new Font("Calibri", Font.BOLD, 16));
 		viewLastButton.setAlignmentX(CENTER_ALIGNMENT);
 		viewLastButton.setEnabled(false);
 		viewLastButton.addActionListener(new ButtonViewLastListener(this.game, this));

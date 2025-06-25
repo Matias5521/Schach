@@ -25,7 +25,7 @@ public class ModeSelectionFrame extends JFrame {
     // Frame-Eigenschaften
     setTitle("Modusauswahl");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setBounds(100, 100, 500, 500);
+    setBounds(100, 100, 600, 600);
     setResizable(true);
     setAlwaysOnTop(true);
 
