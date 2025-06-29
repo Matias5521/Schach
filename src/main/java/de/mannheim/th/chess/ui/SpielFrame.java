@@ -606,6 +606,7 @@ public class SpielFrame extends JFrame {
 		}
 
 		ausgabe.setText(sb.toString());
+		anzeigeMoves.removeLast();
 	}
 
 	private JPanel getUiPlayerOne() {

@@ -9,7 +9,6 @@ import javax.swing.border.EmptyBorder;
 
 // import de.mannheim.th.chess.App;
 import de.mannheim.th.chess.domain.Game;
-import de.mannheim.th.chess.utl.OpeningRecognizer;
 
 import javax.swing.JLabel;
 
