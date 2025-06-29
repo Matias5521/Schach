@@ -531,31 +531,34 @@ public class SpielFrame extends JFrame {
 		ausgabe = new JTextArea();
 		ausgabe.setEditable(false);
 		ausgabe.setBackground(new Color(75, 75, 75));
-		ausgabe.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		ausgabe.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		ausgabe.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		ausgabe.setForeground(Color.BLACK);
 		ausgabe.setText("\n   Bisherige Züge:\n");
 		
 		whiteRemovedPieces = new JTextArea();
+		whiteRemovedPieces.setPreferredSize(new Dimension(300, 100));
 		whiteRemovedPieces.setEditable(false);
 		whiteRemovedPieces.setBackground(new Color(75, 75, 75));
-		whiteRemovedPieces.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		whiteRemovedPieces.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		whiteRemovedPieces.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
 		whiteRemovedPieces.setForeground(Color.WHITE);
 		
 		blackRemovedPieces = new JTextArea();
+		blackRemovedPieces.setPreferredSize(new Dimension(300, 100));
 		blackRemovedPieces.setEditable(false);
 		blackRemovedPieces.setBackground(new Color(75, 75, 75));
-		blackRemovedPieces.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		blackRemovedPieces.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 		blackRemovedPieces.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
 		blackRemovedPieces.setForeground(Color.BLACK);
 
 		JScrollPane scrollPane = new JScrollPane(ausgabe);
+		scrollPane.setPreferredSize(new Dimension(500, 1000));
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-		statistik.add(blackRemovedPieces);	
-		statistik.add(scrollPane);
 		statistik.add(whiteRemovedPieces);	
+		statistik.add(scrollPane);
+		statistik.add(blackRemovedPieces);
 
 		return statistik;
 	}
