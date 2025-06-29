@@ -177,6 +177,7 @@ public class Game {
     }
     this.board.doMove(move);
     this.movelist.add(move);
+    clock.pressClock();
 
   }
 

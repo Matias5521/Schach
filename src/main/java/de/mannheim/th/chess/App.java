@@ -1,6 +1,9 @@
 package de.mannheim.th.chess;
 
+import java.io.IOException;
+
 import de.mannheim.th.chess.ui.MainFrame;
+import de.mannheim.th.chess.utl.OpeningRecognizer;
 
 // import org.apache.logging.log4j.LogManager;
 // import org.apache.logging.log4j.Logger;
@@ -20,8 +23,10 @@ public class App {
    * Main-Methode.
    * 
    * @param args
+ * @throws IOException 
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     new MainFrame();
+    OpeningRecognizer.loadOpenings();
   }
 }
