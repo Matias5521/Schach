@@ -1,5 +1,6 @@
 package de.mannheim.th.chess.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,8 @@ public class Game {
   private Board board;
   private Clock clock;
   private boolean rotieren, zuruecknahme;
+  
+  ArrayList<Piece> removedPieces;
 
   private MoveList movelist;
   private int viewPointer;
@@ -43,6 +46,7 @@ public class Game {
     this.board = new Board();
     this.movelist = new MoveList();
     this.startPosFen = this.board.getFen();
+    removedPieces = new ArrayList<>();
 
     clock = new Clock("blitz");
     clock.start();
@@ -63,6 +67,7 @@ public class Game {
     this.movelist = new MoveList();
 
     clock = new Clock(modus);
+    removedPieces = new ArrayList<>();
   }
 
   /**
@@ -102,6 +107,10 @@ public class Game {
    * @param move the move to be played
    */
   public void playMove(Move move) {
+	Piece removedPiece = board.getPiece(move.getTo());
+	if (removedPiece != Piece.NONE) {
+		removedPieces.add(removedPiece);
+		}
     this.board.doMove(move);
     this.movelist.add(move);
     clock.pressClock();
@@ -116,7 +125,11 @@ public class Game {
 
   public void undo() {
     this.board.undoMove();
-    this.movelist.removeLast();
+    Move lastMove = this.movelist.removeLast();
+    Piece removedPiece = board.getPiece(lastMove.getTo());
+    if (removedPiece != Piece.NONE) {
+    	removedPieces.remove(removedPiece);
+    }
   }
 
   /**
@@ -153,11 +166,15 @@ public class Game {
   /**
    * Plays the move on the board and adds it to the movelist
    *
-   * @param origin     The square from wich it moves from.
+   * @param origin     The square from which it moves from.
    * @param desination The square where it will move to.
    */
   public void playMove(Square origin, Square desination) {
     Move move = new Move(origin, desination);
+    Piece removedPiece = board.getPiece(desination);
+    if (removedPiece != Piece.NONE) {
+    	removedPieces.add(removedPiece);
+    }
     this.board.doMove(move);
     this.movelist.add(move);
 
@@ -318,6 +335,10 @@ public class Game {
 
   public int getViewPointer() {
     return this.viewPointer;
+  }
+  
+  public ArrayList<Piece> getRemovedPieces() {
+	  return removedPieces;
   }
 
   public boolean isRotieren() {

@@ -6,6 +6,8 @@ package de.mannheim.th.chess.ui;
 import com.github.bhlangonijr.chesslib.Square;
 import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
+import com.github.bhlangonijr.chesslib.Piece;
+import com.github.bhlangonijr.chesslib.Side;
 
 import de.mannheim.th.chess.domain.Game;
 import de.mannheim.th.chess.utl.Clock;
@@ -57,7 +59,7 @@ public class SpielFrame extends JFrame {
 	private HashMap<JButton, String> belegungen = new HashMap<>();
 	private JPanel panelLinks, panelRechts, contentPane, controlPanel;
 	private JButton undo, undo2, aufgeben, aufgeben2;
-	private JTextArea ausgabe;
+	private JTextArea ausgabe, blackRemovedPieces, whiteRemovedPieces;
 	private Game game;
 	private Clock clock;
 	private ArrayList<String> anzeigeMoves = new ArrayList<String>();
@@ -305,7 +307,6 @@ public class SpielFrame extends JFrame {
 			jb.setIcon(new ImageIcon("src/main/resources/" + pictures[index] + ".png"));
 			int selectedPiece = index;
 			jb.addActionListener(e -> {
-				System.out.println("Test");
 				result[0] = selectedPiece;
 				dialog.dispose();
 			});
@@ -525,7 +526,8 @@ public class SpielFrame extends JFrame {
 		JPanel statistik = new JPanel();
 		statistik.setBackground(new Color(90, 90, 90));
 		statistik.setLayout(new BoxLayout(statistik, BoxLayout.Y_AXIS));
-
+		
+		
 		ausgabe = new JTextArea();
 		ausgabe.setEditable(false);
 		ausgabe.setBackground(new Color(75, 75, 75));
@@ -533,11 +535,27 @@ public class SpielFrame extends JFrame {
 		ausgabe.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		ausgabe.setForeground(Color.BLACK);
 		ausgabe.setText("\n   Bisherige Züge:\n");
+		
+		whiteRemovedPieces = new JTextArea();
+		whiteRemovedPieces.setEditable(false);
+		whiteRemovedPieces.setBackground(new Color(75, 75, 75));
+		whiteRemovedPieces.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		whiteRemovedPieces.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
+		whiteRemovedPieces.setForeground(Color.WHITE);
+		
+		blackRemovedPieces = new JTextArea();
+		blackRemovedPieces.setEditable(false);
+		blackRemovedPieces.setBackground(new Color(75, 75, 75));
+		blackRemovedPieces.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		blackRemovedPieces.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
+		blackRemovedPieces.setForeground(Color.BLACK);
 
 		JScrollPane scrollPane = new JScrollPane(ausgabe);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
+		statistik.add(blackRemovedPieces);	
 		statistik.add(scrollPane);
+		statistik.add(whiteRemovedPieces);	
 
 		return statistik;
 	}
@@ -553,6 +571,18 @@ public class SpielFrame extends JFrame {
 		for (String line : anzeigeMoves) {
 			sb.append(line);
 		}
+		
+		StringBuilder whitePieces = new StringBuilder();
+		StringBuilder blackPieces = new StringBuilder();
+		for (Piece piece: game.getRemovedPieces()) {
+			if (piece.getPieceSide() == Side.BLACK) {
+				blackPieces.append(piece.getFanSymbol().toUpperCase());
+			} else {
+				whitePieces.append(piece.getFanSymbol().toUpperCase());
+			}
+		}
+		blackRemovedPieces.setText(blackPieces.toString());
+		whiteRemovedPieces.setText(whitePieces.toString());
 
 		ausgabe.setText(sb.toString());
 	}
