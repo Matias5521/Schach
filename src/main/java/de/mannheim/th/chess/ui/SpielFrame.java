@@ -11,6 +11,7 @@ import com.github.bhlangonijr.chesslib.Side;
 
 import de.mannheim.th.chess.domain.Game;
 import de.mannheim.th.chess.utl.Clock;
+import de.mannheim.th.chess.utl.OpeningRecognizer;
 import de.mannheim.th.chess.controller.ButtonAufgebenListener;
 import de.mannheim.th.chess.controller.ButtonFileSaverListener;
 import de.mannheim.th.chess.controller.ButtonMovePieceListener;
@@ -62,6 +63,7 @@ public class SpielFrame extends JFrame {
 	private JTextArea ausgabe, blackRemovedPieces, whiteRemovedPieces;
 	private Game game;
 	private Clock clock;
+	private String opening;
 	private ArrayList<String> anzeigeMoves = new ArrayList<String>();
 	private boolean wechsel = false;
 
@@ -76,7 +78,7 @@ public class SpielFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public SpielFrame(Game game) {
-
+		opening = "unbekannte Eröffnung";
 		this.game = game;
 		this.clock = game.getClock();
 		this.clock.start();
@@ -270,7 +272,8 @@ public class SpielFrame extends JFrame {
 			panelLinks.add(b);
 		}
 	}
-
+	
+	@Deprecated
 	public void showWin(int player) {
 		JFrame frame = new JFrame("Result");
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -566,7 +569,8 @@ public class SpielFrame extends JFrame {
 	public void aktualisiereAusgabe() {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n    Bisherige Züge:\n");
+		opening = OpeningRecognizer.compareOpening(game.getMoveList(), opening);
+		sb.append("\n    Bisherige Züge:		 " + opening + "\n");
 
 		MoveList l = game.getMoveList();
 		anzeigeMoves.add("     " + game.getUnicodeFromMove(l.getLast()) + ": " + l.getLast().toString() + "\n");
@@ -603,6 +607,7 @@ public class SpielFrame extends JFrame {
 		}
 
 		ausgabe.setText(sb.toString());
+		anzeigeMoves.removeLast();
 	}
 
 	private JPanel getUiPlayerOne() {

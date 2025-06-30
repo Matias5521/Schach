@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,8 +33,10 @@ public class MainFrame extends JFrame {
 
   /**
    * Create the frame.
+ * @throws IOException 
    */
   public MainFrame() {
+	  
 
     setBackground(Color.LIGHT_GRAY);
     setResizable(true);
@@ -117,6 +120,7 @@ public class MainFrame extends JFrame {
 
   /**
    * Starts the spielframe and game in playmode
+ * @throws IOException 
    */
   public void startGame() {
     if (this.game != null) {
