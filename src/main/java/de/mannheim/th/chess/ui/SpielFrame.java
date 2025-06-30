@@ -272,7 +272,8 @@ public class SpielFrame extends JFrame {
 			panelLinks.add(b);
 		}
 	}
-
+	
+	@Deprecated
 	public void showWin(int player) {
 		JFrame frame = new JFrame("Result");
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);

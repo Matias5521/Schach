@@ -109,7 +109,11 @@ public class Game {
   public void playMove(Move move) {
 	Piece removedPiece = board.getPiece(move.getTo());
 	if (removedPiece != Piece.NONE) {
+		int removedPiecesCount = removedPieces.size();
 		removedPieces.add(removedPiece);
+		if (removedPiecesCount + 1 < removedPieces.size()) {
+			removedPieces.removeLast();
+		}
 		}
     this.board.doMove(move);
     this.movelist.add(move);

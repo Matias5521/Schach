@@ -26,7 +26,7 @@ public class App {
  * @throws IOException 
    */
   public static void main(String[] args) throws IOException {
-    new MainFrame();
-    OpeningRecognizer.loadOpenings();
+	OpeningRecognizer.loadOpenings();
+	new MainFrame();
   }
 }
