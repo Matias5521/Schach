@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 
 public class SpielFrame extends JFrame {
 
@@ -84,7 +85,11 @@ public class SpielFrame extends JFrame {
 		mode = BoardMode.normal;
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1920, 1080);
+		
+		//setBounds(100, 100, 1920, 1080);
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds(0,0, d.width, d.height);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setTitle("Schach");
 		setAlwaysOnTop(true);
 
